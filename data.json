@@ -1,0 +1,185 @@
+{
+  "days": [
+    {
+      "date": "2026-11-07",
+      "label": "2026-11-07（六）",
+      "items": [
+        {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/?v=20261107"
+        },
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/07",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-07"
+        },
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 17 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026110721"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "label": "2026-11-06（五）",
+      "items": [
+        {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/?v=20261106"
+        },
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/06",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-06"
+        },
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 19 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026110621"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-05",
+      "label": "2026-11-05（四）",
+      "items": [
+        {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/?v=20261105"
+        },
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/05",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-05"
+        },
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 15 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026110521"
+        },
+        {
+          "category": "週末",
+          "bot": "週末去哪玩",
+          "title": "11/14–11/15 週末推薦",
+          "href": "https://penguin-yeh.github.io/weekend-fun/2026-11-14.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-04",
+      "label": "2026-11-04（三）",
+      "items": [
+        {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/?v=20261104"
+        },
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/04",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-04"
+        },
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 12 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026110421"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-03",
+      "label": "2026-11-03（二）",
+      "items": [
+        {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/?v=20261103"
+        },
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/03",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-03"
+        },
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 12 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026110321"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "label": "2026-11-02（一）",
+      "items": [
+        {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/?v=20261102"
+        },
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/02",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-02"
+        },
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 24 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026110221"
+        },
+        {
+          "category": "技術精讀",
+          "bot": "技術成長教練",
+          "title": "Redis 原始碼 src/bitops.c（BITCOUNT／BITFIELD 位元運算，W1）",
+          "href": "https://penguin-yeh.github.io/csapp-ddia-study/"
+        },
+        {
+          "category": "週末",
+          "bot": "週末去哪玩",
+          "title": "11/7–11/8 週末推薦",
+          "href": "https://penguin-yeh.github.io/weekend-fun/2026-11-07.html"
+        }
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "label": "2026-11-01（日）",
+      "items": [
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/01",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-01"
+        },
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 13 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026110121"
+        }
+      ]
+    }
+  ],
+  "history": []
+}

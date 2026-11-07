@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="各個 bot 每天交來的連結都整理在這裡。">
+  <title>每日連結總站</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f5f2;
+      --fg: #1c1b19;
+      --muted: #5e5a54;
+      --line: #e3dfd6;
+      --card: #fffcf8;
+      --accent: #1f4d3a;
+      --link: #18467a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412;
+        --fg: #f0eee8;
+        --muted: #b0aaa0;
+        --line: #2e2c28;
+        --card: #1c1b18;
+        --accent: #9dceB4;
+        --link: #a9c8ee;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.55;
+    }
+
+    main {
+      max-width: 40rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+
+    header h1 {
+      margin: 0 0 0.4rem;
+      font-size: 1.75rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin: 0 0 2rem;
+      color: var(--muted);
+    }
+
+    .day { margin: 0 0 2.25rem; }
+
+    .day h2 {
+      margin: 0 0 0.9rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.05rem;
+      font-weight: 650;
+    }
+
+    .category { margin: 0 0 1rem; }
+
+    .category h3 {
+      margin: 0 0 0.35rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+    }
+
+    .links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .links a {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem 0.75rem;
+      min-height: 2.75rem;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 0.6rem;
+      background: var(--card);
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    .links li + li { margin-top: 0.45rem; }
+
+    .links a:hover { border-color: var(--accent); }
+
+    .links a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .title {
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .bot {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    details {
+      border-top: 1px solid var(--line);
+      padding-top: 1rem;
+    }
+
+    summary {
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 650;
+      min-height: 2.75rem;
+      display: flex;
+      align-items: center;
+    }
+
+    summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    details .day { margin-top: 1.25rem; }
+
+    .status { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>每日連結總站</h1>
+      <p>各個 bot 每天交來的連結都整理在這裡，最新的一天在最上面，依類別分組。</p>
+    </header>
+    <div id="app" class="status">載入中…</div>
+  </main>
+  <script>
+    const CATEGORIES = ["新聞", "洞察", "X", "技術精讀", "週末"];
+
+    function byDateDesc(a, b) {
+      return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+    }
+
+    function safeHref(href) {
+      try {
+        const url = new URL(href, window.location.href);
+        if (url.protocol === "http:" || url.protocol === "https:") return url.href;
+      } catch (error) {
+        return null;
+      }
+      return null;
+    }
+
+    function renderDay(day) {
+      const section = document.createElement("section");
+      section.className = "day";
+
+      const heading = document.createElement("h2");
+      heading.textContent = day.label || day.date;
+      section.appendChild(heading);
+
+      CATEGORIES.forEach((category) => {
+        const items = (day.items || []).filter((item) => item.category === category);
+        if (!items.length) return;
+
+        const block = document.createElement("div");
+        block.className = "category";
+
+        const title = document.createElement("h3");
+        title.textContent = category;
+        block.appendChild(title);
+
+        const list = document.createElement("ul");
+        list.className = "links";
+
+        items.forEach((item) => {
+          const href = safeHref(item.href);
+          if (!href) return;
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = href;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+
+          const name = document.createElement("span");
+          name.className = "title";
+          name.textContent = item.title || href;
+
+          const bot = document.createElement("span");
+          bot.className = "bot";
+          bot.textContent = item.bot || "";
+
+          link.append(name, bot);
+          li.appendChild(link);
+          list.appendChild(li);
+        });
+
+        if (!list.childElementCount) return;
+        block.appendChild(list);
+        section.appendChild(block);
+      });
+
+      return section;
+    }
+
+    function renderDays(days) {
+      const fragment = document.createDocumentFragment();
+      days.slice().sort(byDateDesc).forEach((day) => {
+        fragment.appendChild(renderDay(day));
+      });
+      return fragment;
+    }
+
+    function showMessage(text) {
+      const app = document.getElementById("app");
+      app.className = "status";
+      app.textContent = text;
+    }
+
+    async function load() {
+      const response = await fetch("data.json?v=" + Date.now(), { cache: "no-store" });
+      if (!response.ok) throw new Error("無法讀取 data.json");
+      const data = await response.json();
+      const days = Array.isArray(data.days) ? data.days : [];
+      const history = Array.isArray(data.history) ? data.history : [];
+      const app = document.getElementById("app");
+      app.className = "";
+      app.replaceChildren();
+
+      if (!days.length && !history.length) {
+        showMessage("最近還沒有連結。");
+        return;
+      }
+
+      if (days.length) app.appendChild(renderDays(days));
+
+      if (history.length) {
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        summary.textContent = "歷史";
+        details.append(summary, renderDays(history));
+        app.appendChild(details);
+      }
+    }
+
+    load().catch(() => showMessage("連結讀取失敗，請稍後再試。"));
+  </script>
+</body>
+</html>
