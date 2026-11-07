@@ -7,25 +7,32 @@
   <title>每日連結總站</title>
   <style>
     :root {
-      color-scheme: light dark;
-      --bg: #f6f5f2;
-      --fg: #1c1b19;
-      --muted: #5e5a54;
-      --line: #e3dfd6;
-      --card: #fffcf8;
-      --accent: #1f4d3a;
-      --link: #18467a;
+      color-scheme: light;
+      --bg: #efe6d8;
+      --fg: #1c1915;
+      --muted: #6f655b;
+      --paper: #fbf7f1;
+      --line: #e3d5c2;
+      --mast: #1a1815;
+      --mast-fg: #f8f2e8;
+      --mast-muted: #c9baa6;
+      --gold: #e2b15a;
+      --serif: "Iowan Old Style", Palatino, "Palatino Linotype", "Songti TC", "Noto Serif TC", "PMingLiU", serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #141412;
-        --fg: #f0eee8;
-        --muted: #b0aaa0;
-        --line: #2e2c28;
-        --card: #1c1b18;
-        --accent: #9dceB4;
-        --link: #a9c8ee;
+        color-scheme: dark;
+        --bg: #100f0d;
+        --fg: #f4efe6;
+        --muted: #b7ab9c;
+        --paper: #1b1a17;
+        --line: #34302a;
+        --mast: #070706;
+        --mast-fg: #f7f2ea;
+        --mast-muted: #b7ab9c;
+        --gold: #e2b15a;
       }
     }
 
@@ -35,46 +42,169 @@
       margin: 0;
       background: var(--bg);
       color: var(--fg);
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      line-height: 1.55;
+      font-family: var(--sans);
+      line-height: 1.5;
     }
 
-    main {
-      max-width: 40rem;
+    .svg-sprite {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    .masthead {
+      background: var(--mast);
+      color: var(--mast-fg);
+      padding: 2.8rem 1.25rem 2.2rem;
+    }
+
+    .wrap {
+      width: min(48rem, 100%);
       margin: 0 auto;
-      padding: 2.5rem 1.25rem 4rem;
+      padding: 0 1.2rem;
     }
 
-    header h1 {
-      margin: 0 0 0.4rem;
-      font-size: 1.75rem;
-      font-weight: 650;
-      letter-spacing: -0.02em;
+    .kicker {
+      margin: 0 0 0.7rem;
+      color: var(--gold);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.24em;
     }
 
-    header p {
-      margin: 0 0 2rem;
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(2.15rem, 6vw, 3.25rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+    }
+
+    .dek {
+      max-width: 34rem;
+      margin: 0.85rem 0 0;
+      color: var(--mast-muted);
+      font-size: 0.98rem;
+    }
+
+    main { padding: 1.25rem 0 4rem; }
+
+    .key {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      list-style: none;
+      margin: 0 0 1.15rem;
+      padding: 0;
+    }
+
+    .chip,
+    .block-head {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 0.22rem 0.72rem 0.22rem 0.22rem;
+      background: var(--fill);
+      color: var(--ink);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      flex: none;
+      background: var(--mark);
+      color: var(--mark-ink);
+    }
+
+    .mark svg {
+      display: block;
+      width: 1.15rem;
+      height: 1.15rem;
+    }
+
+    .chip .mark {
+      width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 999px;
+    }
+
+    .chip .mark svg { width: 0.95rem; height: 0.95rem; }
+
+    .day {
+      display: grid;
+      grid-template-columns: 6.4rem minmax(0, 1fr);
+      gap: 0.85rem 1.05rem;
+      margin: 0 0 1.15rem;
+      padding: 1rem;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 1.35rem;
+    }
+
+    .day-mark { padding-top: 0.15rem; }
+
+    .dow {
+      display: block;
+      font-family: var(--serif);
+      font-size: 2.7rem;
+      font-weight: 600;
+      line-height: 0.85;
+      letter-spacing: -0.04em;
+    }
+
+    .md {
+      display: block;
+      margin-top: 0.55rem;
+      font-size: 0.95rem;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .year {
+      display: block;
+      margin-top: 0.1rem;
       color: var(--muted);
-    }
-
-    .day { margin: 0 0 2.25rem; }
-
-    .day h2 {
-      margin: 0 0 0.9rem;
-      padding-bottom: 0.4rem;
-      border-bottom: 1px solid var(--line);
-      font-size: 1.05rem;
-      font-weight: 650;
-    }
-
-    .category { margin: 0 0 1rem; }
-
-    .category h3 {
-      margin: 0 0 0.35rem;
-      color: var(--accent);
       font-size: 0.78rem;
-      font-weight: 650;
-      letter-spacing: 0.08em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      min-width: 0;
+    }
+
+    .block {
+      background: var(--fill);
+      color: var(--ink);
+      border-radius: 1rem;
+      padding: 0.85rem 0.95rem 0.35rem;
+    }
+
+    .block-head { gap: 0.7rem; margin-bottom: 0.45rem; }
+
+    .block .mark {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.85rem;
+    }
+
+    .block .mark svg { width: 1.6rem; height: 1.6rem; }
+
+    .block h3 {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 750;
+      letter-spacing: 0.12em;
     }
 
     .links {
@@ -84,72 +214,240 @@
     }
 
     .links a {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.35rem 0.75rem;
+      display: block;
       min-height: 2.75rem;
-      padding: 0.7rem 0.85rem;
-      border: 1px solid var(--line);
-      border-radius: 0.6rem;
-      background: var(--card);
-      color: var(--link);
+      padding: 0.65rem 0.15rem 0.7rem;
+      border-top: 1px solid var(--hairline);
+      color: inherit;
       text-decoration: none;
     }
 
-    .links li + li { margin-top: 0.45rem; }
-
-    .links a:hover { border-color: var(--accent); }
+    .links a:hover .title { text-decoration: underline; text-underline-offset: 0.18em; }
 
     .links a:focus-visible {
-      outline: 2px solid var(--accent);
+      outline: 2px solid var(--mark);
       outline-offset: 2px;
+      border-radius: 0.4rem;
     }
 
     .title {
-      font-weight: 600;
-      color: var(--fg);
+      display: block;
+      font-size: 1.02rem;
+      font-weight: 680;
+      overflow-wrap: anywhere;
     }
 
     .bot {
-      color: var(--muted);
-      font-size: 0.88rem;
+      display: block;
+      margin-top: 0.12rem;
+      color: var(--soft);
+      font-size: 0.82rem;
     }
 
-    details {
-      border-top: 1px solid var(--line);
-      padding-top: 1rem;
+    .cat-news {
+      --fill: #dce8f8;
+      --ink: #16345c;
+      --soft: #4c6890;
+      --mark: #1d4f92;
+      --mark-ink: #f4f8fd;
+      --hairline: rgba(29, 79, 146, 0.18);
     }
+
+    .cat-insight {
+      --fill: #f8ead0;
+      --ink: #6a3d0c;
+      --soft: #8d6233;
+      --mark: #a15c12;
+      --mark-ink: #fff8ee;
+      --hairline: rgba(161, 92, 18, 0.2);
+    }
+
+    .cat-x {
+      --fill: #141414;
+      --ink: #f6f6f6;
+      --soft: #c6c6c6;
+      --mark: #f6f6f6;
+      --mark-ink: #111111;
+      --hairline: rgba(255, 255, 255, 0.16);
+    }
+
+    .cat-tech {
+      --fill: #d9f1ea;
+      --ink: #0d3f36;
+      --soft: #3d6f64;
+      --mark: #0e6b5c;
+      --mark-ink: #f3fbf8;
+      --hairline: rgba(14, 107, 92, 0.18);
+    }
+
+    .cat-weekend {
+      --fill: #fde3d4;
+      --ink: #6e2e16;
+      --soft: #945743;
+      --mark: #d15a2c;
+      --mark-ink: #fff7f3;
+      --hairline: rgba(209, 90, 44, 0.2);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .cat-news {
+        --fill: #1a2c44;
+        --ink: #e6eef9;
+        --soft: #a9c0de;
+        --mark: #8eb7ea;
+        --mark-ink: #102033;
+        --hairline: rgba(142, 183, 234, 0.28);
+      }
+
+      .cat-insight {
+        --fill: #332616;
+        --ink: #fbe7c6;
+        --soft: #e2c59a;
+        --mark: #f0c27a;
+        --mark-ink: #2a1c0c;
+        --hairline: rgba(240, 194, 122, 0.28);
+      }
+
+      .cat-x {
+        --fill: #f3f3f3;
+        --ink: #151515;
+        --soft: #4e4e4e;
+        --mark: #151515;
+        --mark-ink: #f6f6f6;
+        --hairline: rgba(0, 0, 0, 0.12);
+      }
+
+      .cat-tech {
+        --fill: #132924;
+        --ink: #def6ef;
+        --soft: #a7d5c8;
+        --mark: #8ed9c8;
+        --mark-ink: #0d2420;
+        --hairline: rgba(142, 217, 200, 0.28);
+      }
+
+      .cat-weekend {
+        --fill: #3a2219;
+        --ink: #ffe4d4;
+        --soft: #f0c2ae;
+        --mark: #ffb089;
+        --mark-ink: #3a1c12;
+        --hairline: rgba(255, 176, 137, 0.3);
+      }
+    }
+
+    details.history { margin-top: 0.4rem; }
 
     summary {
-      cursor: pointer;
-      font-size: 1.05rem;
-      font-weight: 650;
-      min-height: 2.75rem;
       display: flex;
       align-items: center;
+      min-height: 2.9rem;
+      padding: 0.7rem 1.05rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      font-weight: 750;
+      cursor: pointer;
     }
 
     summary:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
     }
 
-    details .day { margin-top: 1.25rem; }
+    details.history .day:first-of-type { margin-top: 1rem; }
 
     .status { color: var(--muted); }
+
+    @media (max-width: 640px) {
+      .masthead { padding: 2.1rem 0 1.6rem; }
+
+      .day {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.85rem;
+      }
+
+      .day-mark {
+        display: flex;
+        align-items: baseline;
+        gap: 0.65rem;
+        padding-bottom: 0.45rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .dow { font-size: 1.85rem; }
+      .md { margin-top: 0; }
+      .year { margin-left: auto; }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <header>
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-news" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M3.6 4.6h12.2c.7 0 1.2.5 1.2 1.2V19.2H6.2A2.6 2.6 0 0 1 3.6 16.6V4.6Z"/>
+      <path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M6.2 7.6h7.6"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M6.2 10.6h3.2M6.2 13h3.2M6.2 15.4h3.2M10.6 10.6h3.2M10.6 13h3.2M10.6 15.4h3.2"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M17 7.4h2.6c.6 0 1.1.5 1.1 1.1v8.2a2.5 2.5 0 0 1-2.5 2.5"/>
+    </symbol>
+    <symbol id="icon-insight" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 2.2a6.1 6.1 0 0 0-3.4 11.15c.42.32.75.8.75 1.32V16h5.3v-1.33c0-.52.33-1 .75-1.32A6.1 6.1 0 0 0 12 2.2ZM9.3 17.4h5.4v1.35H9.3V17.4Zm.7 2.25h4v1.25h-4v-1.25Z"/>
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.909L1.254 2.25H8.08l4.253 5.622L16.845 2.25Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"/>
+    </symbol>
+    <symbol id="icon-tech" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M12 5.6C10.5 4.8 8.6 4.4 6 4.4H4.2V17.2c2.4.15 4.1.55 5.8 1.45"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M12 5.6c1.5-.8 3.4-1.2 6-1.2h1.8V17.2c-2.4.15-4.1.55-5.8 1.45"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 5.6v13"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="m14.3 9.7-1.15 1.35 1.15 1.35M17.7 9.7l1.15 1.35-1.15 1.35"/>
+    </symbol>
+    <symbol id="icon-weekend" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3.15" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 3.2v2.15M12 18.65V20.8M3.2 12h2.15M18.65 12H20.8M6.05 6.05l1.5 1.5M16.45 16.45l1.5 1.5M17.95 6.05l-1.5 1.5M7.55 16.45l-1.5 1.5"/>
+    </symbol>
+  </svg>
+
+  <header class="masthead">
+    <div class="wrap">
+      <p class="kicker">LINK DESK</p>
       <h1>每日連結總站</h1>
-      <p>各個 bot 每天交來的連結都整理在這裡，最新的一天在最上面，依類別分組。</p>
-    </header>
-    <div id="app" class="status">載入中…</div>
+      <p class="dek">各個 bot 每天交來的連結都整理在這裡，最新的一天在最上面，依類別分組。</p>
+    </div>
+  </header>
+  <main>
+    <div class="wrap">
+      <ul class="key" id="key" hidden></ul>
+      <div id="app" class="status">載入中…</div>
+    </div>
   </main>
   <script>
-    const CATEGORIES = ["新聞", "洞察", "X", "技術精讀", "週末"];
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const CATEGORIES = [
+      { name: "新聞", className: "cat-news", icon: "icon-news" },
+      { name: "洞察", className: "cat-insight", icon: "icon-insight" },
+      { name: "X", className: "cat-x", icon: "icon-x" },
+      { name: "技術精讀", className: "cat-tech", icon: "icon-tech" },
+      { name: "週末", className: "cat-weekend", icon: "icon-weekend" }
+    ];
+
+    function icon(id) {
+      const svg = document.createElementNS(SVG_NS, "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("focusable", "false");
+      const use = document.createElementNS(SVG_NS, "use");
+      use.setAttribute("href", "#" + id);
+      svg.appendChild(use);
+      return svg;
+    }
+
+    function badge(id) {
+      const mark = document.createElement("span");
+      mark.className = "mark";
+      mark.appendChild(icon(id));
+      return mark;
+    }
 
     function byDateDesc(a, b) {
       return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
@@ -165,28 +463,69 @@
       return null;
     }
 
+    function dayParts(day) {
+      const label = day.label || day.date || "";
+      const match = /^(\d{4})-(\d{2})-(\d{2})（(.)）$/.exec(label);
+      if (!match) return { dow: "", md: label, year: "" };
+      return { dow: match[4], md: match[2] + "/" + match[3], year: match[1] };
+    }
+
+    function renderLegend() {
+      const list = document.getElementById("key");
+      list.replaceChildren();
+      CATEGORIES.forEach((category) => {
+        const item = document.createElement("li");
+        item.className = "chip " + category.className;
+        const name = document.createElement("span");
+        name.textContent = category.name;
+        item.append(badge(category.icon), name);
+        list.appendChild(item);
+      });
+      list.hidden = false;
+    }
+
     function renderDay(day) {
       const section = document.createElement("section");
       section.className = "day";
 
-      const heading = document.createElement("h2");
-      heading.textContent = day.label || day.date;
-      section.appendChild(heading);
+      const parts = dayParts(day);
+      const mark = document.createElement("div");
+      mark.className = "day-mark";
+      if (parts.dow) {
+        const dow = document.createElement("span");
+        dow.className = "dow";
+        dow.textContent = parts.dow;
+        const md = document.createElement("span");
+        md.className = "md";
+        md.textContent = parts.md;
+        const year = document.createElement("span");
+        year.className = "year";
+        year.textContent = parts.year;
+        mark.append(dow, md, year);
+      } else {
+        mark.textContent = day.label || day.date || "";
+      }
+      section.appendChild(mark);
+
+      const blocks = document.createElement("div");
+      blocks.className = "blocks";
 
       CATEGORIES.forEach((category) => {
-        const items = (day.items || []).filter((item) => item.category === category);
+        const items = (day.items || []).filter((item) => item.category === category.name);
         if (!items.length) return;
 
-        const block = document.createElement("div");
-        block.className = "category";
+        const block = document.createElement("section");
+        block.className = "block " + category.className;
 
+        const head = document.createElement("div");
+        head.className = "block-head";
         const title = document.createElement("h3");
-        title.textContent = category;
-        block.appendChild(title);
+        title.textContent = category.name;
+        head.append(badge(category.icon), title);
+        block.appendChild(head);
 
         const list = document.createElement("ul");
         list.className = "links";
-
         items.forEach((item) => {
           const href = safeHref(item.href);
           if (!href) return;
@@ -211,9 +550,10 @@
 
         if (!list.childElementCount) return;
         block.appendChild(list);
-        section.appendChild(block);
+        blocks.appendChild(block);
       });
 
+      section.appendChild(blocks);
       return section;
     }
 
@@ -238,18 +578,20 @@
       const days = Array.isArray(data.days) ? data.days : [];
       const history = Array.isArray(data.history) ? data.history : [];
       const app = document.getElementById("app");
-      app.className = "";
-      app.replaceChildren();
 
       if (!days.length && !history.length) {
         showMessage("最近還沒有連結。");
         return;
       }
 
+      renderLegend();
+      app.className = "";
+      app.replaceChildren();
       if (days.length) app.appendChild(renderDays(days));
 
       if (history.length) {
         const details = document.createElement("details");
+        details.className = "history";
         const summary = document.createElement("summary");
         summary.textContent = "歷史";
         details.append(summary, renderDays(history));
