@@ -539,27 +539,94 @@
       return null;
     }
 
-    function weekendSources(data) {
-      const sources = [];
-      (data.days || []).concat(data.history || []).forEach((day) => {
-        (day.items || []).forEach((item) => {
-          if (item.category === "週末" && day.date) sources.push({ date: day.date, item: item });
-        });
-      });
-      return sources;
+    function isoDate(year, month, day) {
+      return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
     }
 
-    // 五、六、日沒有自己的週末連結時，沿用該週四到當天之間最新的一筆。
-    function carriedWeekend(day, sources) {
-      if (!day.date) return null;
-      if ((day.items || []).some((item) => item.category === "週末")) return null;
-      const weekday = utcWeekday(day.date);
-      const back = { 5: -1, 6: -2, 0: -3 }[weekday];
-      if (back === undefined) return null;
-      const start = shiftDate(day.date, back);
-      const matches = sources.filter((entry) => entry.date >= start && entry.date <= day.date);
-      matches.sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
-      return matches.length ? matches[0].item : null;
+    function isRealDate(iso) {
+      const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+      if (!parts) return false;
+      const dt = new Date(Date.UTC(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3])));
+      return dt.getUTCFullYear() === Number(parts[1])
+        && dt.getUTCMonth() === Number(parts[2]) - 1
+        && dt.getUTCDate() === Number(parts[3]);
+    }
+
+    function targetSaturday(item, arrivalDate) {
+      const fromHref = String(item.href || "").match(/(\d{4}-\d{2}-\d{2})\.html/);
+      if (fromHref && isRealDate(fromHref[1])) return fromHref[1];
+      const fromTitle = String(item.title || "").match(/(\d{1,2})\s*[\/／]\s*(\d{1,2})/);
+      if (!fromTitle) return null;
+      const month = Number(fromTitle[1]);
+      const day = Number(fromTitle[2]);
+      let year = arrivalDate ? Number(String(arrivalDate).slice(0, 4)) : Number(taipeiToday().slice(0, 4));
+      let iso = isoDate(year, month, day);
+      if (!isRealDate(iso)) return null;
+      if (arrivalDate && iso < arrivalDate) iso = isoDate(year + 1, month, day);
+      return isRealDate(iso) ? iso : null;
+    }
+
+    function weekSaturday(iso) {
+      const delta = { 4: 2, 5: 1, 6: 0, 0: -1 }[utcWeekday(iso)];
+      if (delta === undefined) return null;
+      return shiftDate(iso, delta);
+    }
+
+    function taipeiToday() {
+      return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Taipei",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(new Date());
+    }
+
+    function currentWeekendSaturday(today) {
+      const weekday = utcWeekday(today);
+      if (weekday === 0) return shiftDate(today, -1);
+      return shiftDate(today, 6 - weekday);
+    }
+
+    function weekendEntries(data) {
+      const entries = [];
+      (data.days || []).concat(data.history || []).forEach((day) => {
+        (day.items || []).forEach((item) => {
+          if (item.category !== "週末") return;
+          entries.push({
+            date: day.date || "",
+            item: item,
+            target: targetSaturday(item, day.date)
+          });
+        });
+      });
+      return entries;
+    }
+
+    function byArrivalDesc(a, b) {
+      return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+    }
+
+    // 四到日顯示「該週六」對應的週末推薦，取代當天為更晚週末交來的那一筆。
+    function weekendForDay(day, entries) {
+      const own = (day.items || []).filter((item) => item.category === "週末");
+      const saturday = day.date ? weekSaturday(day.date) : null;
+      if (!saturday) return { items: own, tagged: false };
+      const matches = entries.filter((entry) => entry.target === saturday).sort(byArrivalDesc);
+      if (!matches.length) return { items: [], tagged: false };
+      return { items: [matches[0].item], tagged: true };
+    }
+
+    function weekendChipHref(data) {
+      const entries = weekendEntries(data).filter((entry) => safeHref(entry.item.href));
+      if (!entries.length) return null;
+      const saturday = currentWeekendSaturday(taipeiToday());
+      const exact = entries.filter((entry) => entry.target === saturday).sort(byArrivalDesc);
+      if (exact.length) return safeHref(exact[0].item.href);
+      const future = entries
+        .filter((entry) => entry.target && entry.target > saturday)
+        .sort((a, b) => (a.target < b.target ? -1 : a.target > b.target ? 1 : byArrivalDesc(a, b)));
+      if (future.length) return safeHref(future[0].item.href);
+      return safeHref(entries.slice().sort(byArrivalDesc)[0].item.href);
     }
 
     function renderLegend(data) {
@@ -567,7 +634,7 @@
       list.replaceChildren();
       CATEGORIES.forEach((category) => {
         const li = document.createElement("li");
-        const href = latestHref(data, category.name);
+        const href = category.name === "週末" ? weekendChipHref(data) : latestHref(data, category.name);
         const chip = document.createElement(href ? "a" : "span");
         chip.className = "chip " + category.className + (href ? "" : " is-disabled");
         if (href) {
@@ -616,12 +683,10 @@
       CATEGORIES.forEach((category) => {
         let items = (day.items || []).filter((item) => item.category === category.name);
         let carried = false;
-        if (!items.length && category.name === "週末") {
-          const carriedItem = carriedWeekend(day, sources);
-          if (carriedItem) {
-            items = [carriedItem];
-            carried = true;
-          }
+        if (category.name === "週末") {
+          const picked = weekendForDay(day, sources);
+          items = picked.items;
+          carried = picked.tagged;
         }
         if (!items.length) return;
 
@@ -675,7 +740,7 @@
     }
 
     function renderDays(days, data) {
-      const sources = weekendSources(data);
+      const sources = weekendEntries(data);
       const fragment = document.createDocumentFragment();
       days.slice().sort(byDateDesc).forEach((day) => {
         fragment.appendChild(renderDay(day, sources));
