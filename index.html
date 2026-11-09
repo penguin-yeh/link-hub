@@ -107,6 +107,8 @@
       gap: 0.45rem;
     }
 
+    .key li { display: flex; }
+
     .chip {
       border-radius: 999px;
       padding: 0.22rem 0.72rem 0.22rem 0.22rem;
@@ -114,6 +116,44 @@
       color: var(--ink);
       font-size: 0.82rem;
       font-weight: 700;
+    }
+
+    a.chip,
+    a.chip:visited {
+      color: var(--ink);
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    a.chip:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+    }
+
+    a.chip:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .chip.is-disabled {
+      opacity: 0.38;
+      cursor: default;
+    }
+
+    .carry {
+      margin-left: auto;
+      padding: 0.12rem 0.5rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      color: var(--soft);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      a.chip { transition: none; }
     }
 
     .mark {
@@ -470,21 +510,84 @@
       return { dow: match[4], md: match[2] + "/" + match[3], year: match[1] };
     }
 
-    function renderLegend() {
+    function utcWeekday(iso) {
+      const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+      if (!parts) return null;
+      return new Date(Date.UTC(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]))).getUTCDay();
+    }
+
+    function shiftDate(iso, days) {
+      const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+      const dt = new Date(Date.UTC(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3])));
+      dt.setUTCDate(dt.getUTCDate() + days);
+      const month = String(dt.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(dt.getUTCDate()).padStart(2, "0");
+      return dt.getUTCFullYear() + "-" + month + "-" + day;
+    }
+
+    function latestHref(data, categoryName) {
+      const pools = [data.days || [], data.history || []];
+      for (let i = 0; i < pools.length; i += 1) {
+        const sorted = pools[i].slice().sort(byDateDesc);
+        for (let j = 0; j < sorted.length; j += 1) {
+          const item = (sorted[j].items || []).find((entry) => entry.category === categoryName);
+          if (!item) continue;
+          const href = safeHref(item.href);
+          if (href) return href;
+        }
+      }
+      return null;
+    }
+
+    function weekendSources(data) {
+      const sources = [];
+      (data.days || []).concat(data.history || []).forEach((day) => {
+        (day.items || []).forEach((item) => {
+          if (item.category === "週末" && day.date) sources.push({ date: day.date, item: item });
+        });
+      });
+      return sources;
+    }
+
+    // 五、六、日沒有自己的週末連結時，沿用該週四到當天之間最新的一筆。
+    function carriedWeekend(day, sources) {
+      if (!day.date) return null;
+      if ((day.items || []).some((item) => item.category === "週末")) return null;
+      const weekday = utcWeekday(day.date);
+      const back = { 5: -1, 6: -2, 0: -3 }[weekday];
+      if (back === undefined) return null;
+      const start = shiftDate(day.date, back);
+      const matches = sources.filter((entry) => entry.date >= start && entry.date <= day.date);
+      matches.sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
+      return matches.length ? matches[0].item : null;
+    }
+
+    function renderLegend(data) {
       const list = document.getElementById("key");
       list.replaceChildren();
       CATEGORIES.forEach((category) => {
-        const item = document.createElement("li");
-        item.className = "chip " + category.className;
+        const li = document.createElement("li");
+        const href = latestHref(data, category.name);
+        const chip = document.createElement(href ? "a" : "span");
+        chip.className = "chip " + category.className + (href ? "" : " is-disabled");
+        if (href) {
+          chip.href = href;
+          chip.target = "_blank";
+          chip.rel = "noopener noreferrer";
+          chip.setAttribute("aria-label", "開啟最新的" + category.name);
+        } else {
+          chip.setAttribute("aria-disabled", "true");
+        }
         const name = document.createElement("span");
         name.textContent = category.name;
-        item.append(badge(category.icon), name);
-        list.appendChild(item);
+        chip.append(badge(category.icon), name);
+        li.appendChild(chip);
+        list.appendChild(li);
       });
       list.hidden = false;
     }
 
-    function renderDay(day) {
+    function renderDay(day, sources) {
       const section = document.createElement("section");
       section.className = "day";
 
@@ -511,7 +614,15 @@
       blocks.className = "blocks";
 
       CATEGORIES.forEach((category) => {
-        const items = (day.items || []).filter((item) => item.category === category.name);
+        let items = (day.items || []).filter((item) => item.category === category.name);
+        let carried = false;
+        if (!items.length && category.name === "週末") {
+          const carriedItem = carriedWeekend(day, sources);
+          if (carriedItem) {
+            items = [carriedItem];
+            carried = true;
+          }
+        }
         if (!items.length) return;
 
         const block = document.createElement("section");
@@ -522,6 +633,12 @@
         const title = document.createElement("h3");
         title.textContent = category.name;
         head.append(badge(category.icon), title);
+        if (carried) {
+          const tag = document.createElement("span");
+          tag.className = "carry";
+          tag.textContent = "本週末";
+          head.appendChild(tag);
+        }
         block.appendChild(head);
 
         const list = document.createElement("ul");
@@ -557,10 +674,11 @@
       return section;
     }
 
-    function renderDays(days) {
+    function renderDays(days, data) {
+      const sources = weekendSources(data);
       const fragment = document.createDocumentFragment();
       days.slice().sort(byDateDesc).forEach((day) => {
-        fragment.appendChild(renderDay(day));
+        fragment.appendChild(renderDay(day, sources));
       });
       return fragment;
     }
@@ -584,17 +702,17 @@
         return;
       }
 
-      renderLegend();
+      renderLegend(data);
       app.className = "";
       app.replaceChildren();
-      if (days.length) app.appendChild(renderDays(days));
+      if (days.length) app.appendChild(renderDays(days, data));
 
       if (history.length) {
         const details = document.createElement("details");
         details.className = "history";
         const summary = document.createElement("summary");
         summary.textContent = "歷史";
-        details.append(summary, renderDays(history));
+        details.append(summary, renderDays(history, data));
         app.appendChild(details);
       }
     }
