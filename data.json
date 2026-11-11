@@ -9,6 +9,12 @@
           "bot": "每天發生的事",
           "title": "今日新聞統整",
           "href": "https://penguin-yeh.github.io/daily-news/?v=20261111"
+        },
+        {
+          "category": "洞察",
+          "bot": "Obsidian 大腦",
+          "title": "每日洞察 11/11",
+          "href": "https://penguin-yeh.github.io/daily-insights/#2026-11-11"
         }
       ]
     },
