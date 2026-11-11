@@ -1,6 +1,18 @@
 {
   "days": [
     {
+      "date": "2026-11-11",
+      "label": "2026-11-11（三）",
+      "items": [
+        {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/?v=20261111"
+        }
+      ]
+    },
+    {
       "date": "2026-11-10",
       "label": "2026-11-10（二）",
       "items": [
