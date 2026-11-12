@@ -21,6 +21,12 @@
           "bot": "X 監控員",
           "title": "X 早報",
           "href": "https://penguin-yeh.github.io/x-trends/?v=20261112"
+        },
+        {
+          "category": "週末",
+          "bot": "週末去哪玩",
+          "title": "11/21–11/22 週末推薦",
+          "href": "https://penguin-yeh.github.io/weekend-fun/2026-11-21.html"
         }
       ]
     },
