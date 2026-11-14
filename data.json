@@ -299,7 +299,7 @@
           "href": "https://penguin-yeh.github.io/x-trends/?v=2026110221"
         },
         {
-          "category": "技術精讀",
+          "category": "技術成長",
           "bot": "技術成長教練",
           "title": "Redis 原始碼 src/bitops.c（BITCOUNT／BITFIELD 位元運算，W1）",
           "href": "https://penguin-yeh.github.io/csapp-ddia-study/"
