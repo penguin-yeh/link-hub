@@ -1,5 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="每日連結總站">
-  <rect width="64" height="64" fill="#1a1815"/>
-  <path fill="#e2b15a" fill-rule="evenodd" transform="rotate(-32 32 32)" d="M22.400,23.040 H41.600 A8.960,8.960 0 0 1 50.560,32.000 V32.000 A8.960,8.960 0 0 1 41.600,40.960 H22.400 A8.960,8.960 0 0 1 13.440,32.000 V32.000 A8.960,8.960 0 0 1 22.400,23.040ZM22.400,28.032 H41.600 A3.968,3.968 0 0 1 45.568,32.000 V32.000 A3.968,3.968 0 0 1 41.600,35.968 H22.400 A3.968,3.968 0 0 1 18.432,32.000 V32.000 A3.968,3.968 0 0 1 22.400,28.032Z"/>
-  <path fill="#e2b15a" fill-rule="evenodd" transform="rotate(32 32 32)" d="M22.400,23.040 H41.600 A8.960,8.960 0 0 1 50.560,32.000 V32.000 A8.960,8.960 0 0 1 41.600,40.960 H22.400 A8.960,8.960 0 0 1 13.440,32.000 V32.000 A8.960,8.960 0 0 1 22.400,23.040ZM22.400,28.032 H41.600 A3.968,3.968 0 0 1 45.568,32.000 V32.000 A3.968,3.968 0 0 1 41.600,35.968 H22.400 A3.968,3.968 0 0 1 18.432,32.000 V32.000 A3.968,3.968 0 0 1 22.400,28.032Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="每日連結總站">
+  <rect width="180" height="180" fill="#f6f0e6"/>
+  <ellipse cx="58" cy="150" rx="14" ry="8" fill="#e2b15a"/>
+  <ellipse cx="90" cy="150" rx="14" ry="8" fill="#e2b15a"/>
+  <ellipse cx="166" cy="128" rx="12" ry="18" transform="rotate(28 166 128)" fill="#e39a4a"/>
+  <ellipse cx="28" cy="112" rx="16" ry="24" transform="rotate(-18 28 112)" fill="#1c1b19"/>
+  <ellipse cx="72" cy="100" rx="50" ry="54" fill="#1c1b19"/>
+  <ellipse cx="72" cy="112" rx="31" ry="34" fill="#fffdf8"/>
+  <ellipse cx="128" cy="108" rx="38" ry="36" fill="#e39a4a"/>
+  <path d="M106 86 L118 60 L132 84 Z" fill="#e39a4a"/>
+  <path d="M126 84 L140 58 L154 88 Z" fill="#e39a4a"/>
+  <path d="M112 82 L120 66 L128 82 Z" fill="#f3c3b6"/>
+  <path d="M132 82 L142 66 L148 84 Z" fill="#f3c3b6"/>
+  <ellipse cx="100" cy="130" rx="13" ry="10" fill="#e39a4a"/>
+  <ellipse cx="100" cy="131" rx="6" ry="4.5" fill="#f6c9a4"/>
+  <ellipse cx="52" cy="108" rx="8" ry="5" fill="#f0b2a6"/>
+  <ellipse cx="92" cy="108" rx="8" ry="5" fill="#f0b2a6"/>
+  <ellipse cx="114" cy="118" rx="7" ry="4.5" fill="#f0b2a6"/>
+  <ellipse cx="144" cy="118" rx="7" ry="4.5" fill="#f0b2a6"/>
+  <ellipse cx="128" cy="120" rx="16" ry="12" fill="#fff8ef"/>
+  <ellipse cx="58" cy="92" rx="7" ry="8" fill="#1c1b19"/>
+  <ellipse cx="86" cy="92" rx="7" ry="8" fill="#1c1b19"/>
+  <ellipse cx="60" cy="90" rx="2.4" ry="2.6" fill="#fffdf8"/>
+  <ellipse cx="88" cy="90" rx="2.4" ry="2.6" fill="#fffdf8"/>
+  <ellipse cx="116" cy="104" rx="5.2" ry="6" fill="#1c1b19"/>
+  <ellipse cx="140" cy="104" rx="5.2" ry="6" fill="#1c1b19"/>
+  <ellipse cx="117.4" cy="102.4" rx="1.8" ry="2" fill="#fffdf8"/>
+  <ellipse cx="141.4" cy="102.4" rx="1.8" ry="2" fill="#fffdf8"/>
+  <path d="M64 104 Q72 112 80 104 Q72 108 64 104 Z" fill="#e2b15a"/>
+  <ellipse cx="128" cy="116" rx="3.4" ry="2.6" fill="#e07a78"/>
+  <path d="M122 121 Q128 127 134 121" fill="none" stroke="#1c1b19" stroke-width="2.4" stroke-linecap="round"/>
 </svg>
