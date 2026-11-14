@@ -9,6 +9,12 @@
           "bot": "X 監控員",
           "title": "X 晚間整理（新增 14 則）",
           "href": "https://penguin-yeh.github.io/x-trends/?v=2026111421"
+        },
+        {
+          "category": "學習",
+          "bot": "每日東東",
+          "title": "每日學習筆記（演算法／CS:APP／Linux Kernel）",
+          "href": "https://penguin-yeh.github.io/learning-daily/"
         }
       ]
     },
