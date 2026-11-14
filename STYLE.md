@@ -50,7 +50,7 @@
 | 新聞 | `cat-news` | 藍 `#1d4f92` |
 | 洞察 | `cat-insight` | 琥珀 `#a15c12` |
 | X | `cat-x` | 黑白 `#f6f6f6` 反相 |
-| 技術精讀 | `cat-tech` | 青綠 `#0e6b5c` |
+| 技術成長 | `cat-tech` | 青綠 `#0e6b5c` |
 | 學習 | `cat-learn` | 靛紫 `#5240a8` |
 | 週末 | `cat-weekend` | 橘 `#d15a2c` |
 
