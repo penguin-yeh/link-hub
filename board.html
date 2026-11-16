@@ -138,8 +138,8 @@
     const pic = (el, base) => { const i = el.querySelector("img[src]"); return i ? abs(i.getAttribute("src"), base) : ""; };   // 該則自己的圖，沒有就空字串
     const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-    // 有圖的排前面（各自打亂），讓看板一開始就多一點畫面
-    const order = (items) => [...shuffle(items.filter((x) => x.image)), ...shuffle(items.filter((x) => !x.image))];
+    // 每個來源內完全隨機；整輪播完才會重複，重洗後也不會馬上重播同一則
+    const order = (items) => shuffle([...items]);
 
     async function getDoc(url) {
       const res = await fetch(url + (url.includes("?") ? "&" : "?") + "v=" + Date.now(), { cache: "no-store" });
@@ -266,7 +266,7 @@
 
     // ---- 輪播 ----
     const queues = {};            // key -> { items, i }
-    let step = 0, current = null, upcoming = null, timer = null, paused = false, shown = 0, startedAt = 0;
+    let step = Math.floor(Math.random() * PATTERN.length), current = null, upcoming = null, timer = null, paused = false, shown = 0, startedAt = 0;
 
     async function refresh() {
       const keys = Object.keys(SOURCES).filter((k) => !ONLY.length || ONLY.includes(k));
@@ -299,7 +299,7 @@
         const q = queues[k]; if (!q) continue;
         if (current && current.k === k && new Set(live).size > 1) continue;   // 相鄰不重複來源
         const item = q.items[q.i++ % q.items.length];
-        if (q.i % q.items.length === 0) q.items = order(q.items);
+        if (q.i % q.items.length === 0) { q.items = order(q.items); if (q.items.length > 1 && q.items[0] === item) q.items.push(q.items.shift()); }
         return { k, item };
       }
       const k = live[0], q = queues[k];
