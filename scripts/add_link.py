@@ -7,7 +7,7 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-CATEGORIES = ("新聞", "洞察", "X", "學習", "成長", "週末")
+CATEGORIES = ("新聞", "洞察", "X", "學習", "週末")
 WEEKDAYS = "一二三四五六日"
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "data.json"

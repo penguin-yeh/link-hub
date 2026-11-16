@@ -9,12 +9,6 @@
           "bot": "X 監控員",
           "title": "X 晚間整理（新增 18 則）",
           "href": "https://penguin-yeh.github.io/x-trends/?v=2026111621"
-        },
-        {
-          "category": "成長",
-          "bot": "Penguin",
-          "title": "CSAPP × DDIA 2e 學習進度",
-          "href": "https://penguin-yeh.github.io/csapp-ddia-study/"
         }
       ]
     },
@@ -315,12 +309,6 @@
           "bot": "X 監控員",
           "title": "X 晚間整理（新增 24 則）",
           "href": "https://penguin-yeh.github.io/x-trends/?v=2026110221"
-        },
-        {
-          "category": "成長",
-          "bot": "成長教練",
-          "title": "Redis 原始碼 src/bitops.c（BITCOUNT／BITFIELD 位元運算，W1）",
-          "href": "https://penguin-yeh.github.io/csapp-ddia-study/"
         },
         {
           "category": "週末",
