@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b0a09">
+  <title>每日連結總站 · 看板</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    /* 常駐看板：不用互動，自動輪播各來源的單則內容。風格沿用 STYLE.md「報社總編桌」的深色 token。 */
+    :root {
+      --bg: #0b0a09;
+      --fg: #f4efe6;
+      --muted: #a79c8d;
+      --faint: #6f665b;
+      --line: #2b2722;
+      --gold: #e2b15a;
+      --serif: "Iowan Old Style", Palatino, "Palatino Linotype", "Songti TC", "Noto Serif TC", "PMingLiU", serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --acc: var(--gold);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--sans);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      padding: 3.4vh 3.6vw 2.8vh;
+      gap: 2.6vh;
+      transition: filter 2s;
+    }
+    body.night { filter: brightness(.55); }
+    body.idle { cursor: none; }
+
+    /* 上列：時鐘＋來源燈號 */
+    .top { display: flex; align-items: flex-end; justify-content: space-between; gap: 3vw; border-bottom: 1px solid var(--line); padding-bottom: 1.8vh; }
+    .clock { font-family: var(--serif); font-size: clamp(2.2rem, 5.2vw, 6rem); line-height: .95; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+    .date { font-family: var(--mono); font-size: clamp(.8rem, 1.15vw, 1.35rem); color: var(--muted); margin-top: .9vh; letter-spacing: .06em; }
+    .sources { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .7vw 1.4vw; font-family: var(--mono); font-size: clamp(.72rem, 1vw, 1.15rem); color: var(--faint); }
+    .src { display: flex; align-items: center; gap: .5em; transition: color .4s; }
+    .src i { width: .62em; height: .62em; border-radius: 50%; background: currentColor; opacity: .55; }
+    .src.ok { color: var(--muted); }
+    .src.on { color: var(--c); }
+    .src.on i { opacity: 1; }
+
+    /* 主畫面：一次一則 */
+    .stage { position: relative; min-height: 0; }
+    .slide {
+      position: absolute; inset: 0;
+      display: grid; grid-template-columns: minmax(0, 1fr); gap: 3vw; align-items: center;
+      opacity: 0; transition: opacity .7s ease;
+      text-decoration: none; color: inherit;
+    }
+    .slide.show { opacity: 1; }
+    .slide.has-img { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+    .body { min-width: 0; display: flex; flex-direction: column; gap: 2.2vh; }
+    .kicker { display: flex; flex-wrap: wrap; align-items: center; gap: .8em; font-family: var(--mono); font-size: clamp(.85rem, 1.25vw, 1.5rem); letter-spacing: .08em; }
+    .chip { background: var(--acc); color: #0b0a09; font-weight: 700; padding: .22em .75em; border-radius: 4px; }
+    .sub { color: var(--acc); }
+    h1 {
+      margin: 0; font-family: var(--serif); font-weight: 700; line-height: 1.22; letter-spacing: -.005em;
+      font-size: clamp(1.9rem, 4.3vw, 5.2rem);
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+      text-wrap: balance;
+    }
+    .slide.long h1 { font-size: clamp(1.6rem, 3.4vw, 4.1rem); }
+    .sum {
+      margin: 0; color: #d9d2c6; line-height: 1.6;
+      font-size: clamp(1.05rem, 1.85vw, 2.2rem);
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden;
+    }
+    .note { margin: 0; padding-left: 1em; border-left: 3px solid var(--acc); color: var(--fg); font-size: clamp(.95rem, 1.5vw, 1.8rem); line-height: 1.55;
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+    .meta { font-family: var(--mono); font-size: clamp(.78rem, 1.05vw, 1.25rem); color: var(--muted); letter-spacing: .03em; }
+    .media { align-self: stretch; min-height: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #151310; }
+    .media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* 下列：進度＋下一則 */
+    .bottom { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2vw; align-items: center; font-family: var(--mono); font-size: clamp(.72rem, 1vw, 1.15rem); color: var(--faint); }
+    .bar { grid-column: 1 / -1; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+    .bar b { display: block; height: 100%; width: 0; background: var(--acc); }
+    .next { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .next em { font-style: normal; color: var(--muted); }
+    .status { text-align: center; color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.8rem); align-self: center; justify-self: center; position: absolute; inset: 0; display: grid; place-items: center; }
+
+    @media (max-aspect-ratio: 1/1) {            /* 直立螢幕：圖片放上面 */
+      .slide.has-img { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+      .slide.has-img .media { order: -1; }
+    }
+    @media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <div class="clock" id="clock">--:--</div>
+      <div class="date" id="date"></div>
+    </div>
+    <div class="sources" id="sources"></div>
+  </header>
+
+  <main class="stage" id="stage"><div class="status" id="status">載入中…</div></main>
+
+  <footer class="bottom">
+    <div class="bar"><b id="bar"></b></div>
+    <div class="next" id="next"></div>
+    <div id="count"></div>
+  </footer>
+
+  <script>
+  (() => {
+    "use strict";
+    const params = new URLSearchParams(location.search);
+    const SECONDS = Math.max(6, Number(params.get("t")) || 20);     // 每則停留秒數：?t=30
+    const REFRESH_MIN = 20;                                          // 每 20 分鐘重抓內容
+    const ONLY = (params.get("src") || "").split(",").filter(Boolean); // 只看部分來源：?src=news,x
+
+    // 來源定義。顏色取自 STYLE.md 的類別色（深色版 --mark）。
+    const SOURCES = {
+      news:    { name: "新聞",  color: "#8eb7ea", base: "../daily-news/",     load: loadNews },
+      x:       { name: "X",     color: "#f3f3f3", base: "../x-trends/",      load: loadX },
+      insight: { name: "洞察",  color: "#f0c27a", base: "../daily-insights/", load: loadInsights },
+      learn:   { name: "學習",  color: "#b4a6f2", base: "../learning-daily/", load: loadLearning },
+      weekend: { name: "週末",  color: "#ffb089", base: "../weekend-fun/",   load: loadWeekend },
+    };
+    // 輪播節奏：每一輪固定這個順序，相鄰兩則一定來自不同來源；新聞與 X 內容多，出現較頻繁。
+    const PATTERN = ["news", "x", "insight", "news", "x", "weekend", "news", "x", "learn"];
+
+    const $ = (id) => document.getElementById(id);
+    const txt = (el) => (el ? el.textContent.replace(/\s+/g, " ").trim() : "");
+    const abs = (href, base) => { try { return new URL(href, new URL(base, location.href)).href; } catch (_) { return ""; } };
+    const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+    async function getDoc(url) {
+      const res = await fetch(url + (url.includes("?") ? "&" : "?") + "v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error(url + " " + res.status);
+      return new DOMParser().parseFromString(await res.text(), "text/html");
+    }
+
+    // ---- 各來源的解析：每個回傳 [{title, sub, summary, note, meta, image, href}] ----
+
+    async function loadNews(base) {
+      const doc = await getDoc(base + "index.html");
+      const day = (doc.title.match(/\d{4}-\d{2}-\d{2}/) || [""])[0];
+      const out = [];
+      doc.querySelectorAll('div[style*="overflow:hidden"][style*="flex-direction:column"]').forEach((card) => {
+        const a = card.querySelector('a[style*="underline"]');
+        if (!a) return;
+        const m = txt(a).match(/^【(.+?)】(.*)$/);
+        const section = card.closest('div[style*="border-top:3px solid"]');
+        const domain = section ? txt(section.querySelector("td span")) : "";
+        const img = card.querySelector("img");
+        const metric = txt(card.querySelector('div[style*="font-size:11.5px"]'));
+        out.push({
+          title: m ? m[2] : txt(a),
+          sub: [domain, m ? m[1] : ""].filter(Boolean).join(" · "),
+          summary: txt(card.querySelector('div[style*="font-size:13px"]')),
+          meta: [day, metric].filter(Boolean).join("　"),
+          image: img ? abs(img.getAttribute("src"), base) : "",
+          href: a.href,
+        });
+      });
+      if (!out.length) {                                   // 舊版頁面（class 寫法）
+        doc.querySelectorAll(".day:not([hidden]) article.card, article.card").forEach((card) => {
+          const h = card.querySelector("h3"); if (!h) return;
+          const a = card.querySelector("a.lnk");
+          out.push({ title: txt(h), sub: txt(card.querySelector(".src")), summary: txt(card.querySelector("p")), meta: day, href: a ? a.href : abs("index.html", base) });
+        });
+      }
+      return out;
+    }
+
+    async function loadX(base) {
+      const doc = await getDoc(base + "index.html");
+      const day = doc.querySelector(".day");                // 第一個 .day 是最新一天
+      if (!day) return [];
+      const date = day.dataset.date || "";
+      const out = [];
+      day.querySelectorAll("article.post").forEach((p) => {
+        const who = txt(p.querySelector(".hd b"));
+        const when = txt(p.querySelector(".hd .g"));
+        if (p.classList.contains("tweet")) {
+          const zh = p.querySelector(".zh"); const label = zh && zh.querySelector(".zl"); if (label) label.remove();
+          const body = txt(zh) || txt(p.querySelector(".tx"));
+          if (!body) return;
+          out.push({ title: body, sub: [who, txt(p.querySelector(".co"))].filter(Boolean).join(" · "), summary: txt(p.querySelector(".role")), meta: when, href: abs("#" + (p.id || date), base) });
+        } else {
+          const title = txt(p.querySelector(".pt"));
+          if (!title) return;                               // 置頂摘要沒有 .pt，略過
+          const a = p.querySelector("a.btn");
+          out.push({ title, sub: who, summary: txt(p.querySelector(".ps")), meta: date, href: a ? a.href : abs("#" + date, base) });
+        }
+      });
+      return out;
+    }
+
+    async function loadInsights(base) {
+      const doc = await getDoc(base + "index.html");
+      const day = doc.querySelector(".day");
+      if (!day) return [];
+      const date = day.dataset.date || "";
+      const out = [];
+      const verdict = txt(day.querySelector(".hero p"));
+      if (verdict) out.push({ title: "今日判讀", sub: "分析觀點", summary: verdict, note: txt(day.querySelector(".today")), meta: date, href: abs("#" + date, base) });
+      day.querySelectorAll("article.card").forEach((c) => {
+        const h = txt(c.querySelector("h3")); if (!h) return;
+        out.push({ title: h, sub: "我的見解", summary: txt(c.querySelector(".view p")) || txt(c.querySelector(".ana")), note: txt(c.querySelector(".learn p")), meta: date, href: abs("#" + c.id, base) });
+      });
+      return out;
+    }
+
+    async function loadLearning(base) {
+      const doc = await getDoc(base + "index.html");
+      const date = (doc.title.match(/\d{4}-\d{2}-\d{2}/) || [""])[0];
+      const out = [];
+      const toc = doc.querySelector('table[style*="margin-top:20px"]');   // 「今日目錄」
+      if (!toc) return out;
+      const heads = [...doc.querySelectorAll('div[style*="font-size:20px"]')];
+      toc.querySelectorAll("tr").forEach((tr) => {
+        const td = tr.querySelectorAll("td"); if (td.length < 3) return;
+        const title = txt(td[2]); if (!title) return;
+        const h = heads.find((x) => txt(x) === title);
+        const first = h && h.nextElementSibling ? h.nextElementSibling.querySelector("p") : null;
+        out.push({ title, sub: txt(td[1]), summary: txt(first), meta: date, href: abs("index.html", base) });
+      });
+      return out;
+    }
+
+    async function loadWeekend(base) {
+      const home = await getDoc(base + "index.html");
+      // 選「這個週末」：週六日期 >= 昨天 的最早一期（週日仍算本週末）；都過期就用最新一期。
+      const issues = [...home.querySelectorAll('a[href]')].map((a) => a.getAttribute("href")).filter((h) => /^\d{4}-\d{2}-\d{2}\.html$/.test(h));
+      const uniq = [...new Set(issues)].sort();
+      if (!uniq.length) return [];
+      const y = new Date(Date.now() - 864e5); const cut = y.getFullYear() + "-" + String(y.getMonth() + 1).padStart(2, "0") + "-" + String(y.getDate()).padStart(2, "0");
+      const page = uniq.find((h) => h.slice(0, 10) >= cut) || uniq[uniq.length - 1];
+      const doc = await getDoc(base + page);
+      const span = page.slice(5, 10).replace("-", "/");
+      const out = [];
+      doc.querySelectorAll("article.ent").forEach((e) => {
+        const title = txt(e.querySelector("h3")); if (!title) return;
+        const spans = [...e.querySelectorAll(".meta span")].map(txt).filter(Boolean);
+        const img = e.querySelector("img");
+        const a = e.querySelector(".links a");
+        out.push({
+          title,
+          sub: [txt(e.querySelector(".kind")), txt(e.querySelector(".tag")), txt(e.querySelector(".flag"))].filter(Boolean).join(" · "),
+          summary: txt(e.querySelector(".hi")),
+          meta: ["週末 " + span, ...spans.slice(0, 3)].join("　"),
+          image: img ? abs(img.getAttribute("src"), base) : "",
+          href: a ? a.href : abs(page + "#" + e.id, base),
+        });
+      });
+      return out;
+    }
+
+    // ---- 輪播 ----
+    const queues = {};            // key -> { items, i }
+    let step = 0, current = null, upcoming = null, timer = null, paused = false, shown = 0, startedAt = 0;
+
+    async function refresh() {
+      const keys = Object.keys(SOURCES).filter((k) => !ONLY.length || ONLY.includes(k));
+      await Promise.all(keys.map(async (k) => {
+        try {
+          const items = (await SOURCES[k].load(SOURCES[k].base)).filter((x) => x && x.title);
+          if (items.length) queues[k] = { items: shuffle(items), i: 0 };
+        } catch (err) { console.warn("[board] " + k + " 載入失敗", err); }
+      }));
+      renderSources();
+    }
+
+    function renderSources() {
+      const box = $("sources"); box.textContent = "";
+      Object.entries(SOURCES).forEach(([k, s]) => {
+        if (ONLY.length && !ONLY.includes(k)) return;
+        const el = document.createElement("span");
+        el.className = "src" + (queues[k] ? " ok" : ""); el.dataset.k = k; el.style.setProperty("--c", s.color);
+        el.appendChild(document.createElement("i"));
+        el.appendChild(document.createTextNode(s.name + (queues[k] ? " " + queues[k].items.length : " —")));
+        box.appendChild(el);
+      });
+    }
+
+    function pick() {
+      const live = PATTERN.filter((k) => queues[k]);
+      if (!live.length) return null;
+      for (let n = 0; n < PATTERN.length; n++) {
+        const k = PATTERN[step++ % PATTERN.length];
+        const q = queues[k]; if (!q) continue;
+        if (current && current.k === k && new Set(live).size > 1) continue;   // 相鄰不重複來源
+        const item = q.items[q.i++ % q.items.length];
+        if (q.i % q.items.length === 0) shuffle(q.items);
+        return { k, item };
+      }
+      const k = live[0], q = queues[k];
+      return { k, item: q.items[q.i++ % q.items.length] };
+    }
+
+    function build({ k, item }) {
+      const s = SOURCES[k];
+      const a = document.createElement("a");
+      a.className = "slide"; a.href = item.href || "#"; a.target = "_blank"; a.rel = "noopener noreferrer";
+      a.style.setProperty("--acc", s.color);
+      const body = document.createElement("div"); body.className = "body";
+      const kicker = document.createElement("div"); kicker.className = "kicker";
+      const chip = document.createElement("span"); chip.className = "chip"; chip.textContent = s.name; kicker.appendChild(chip);
+      if (item.sub) { const sub = document.createElement("span"); sub.className = "sub"; sub.textContent = item.sub; kicker.appendChild(sub); }
+      body.appendChild(kicker);
+      const h = document.createElement("h1"); h.textContent = item.title; body.appendChild(h);
+      if (item.title.length > 44) a.classList.add("long");
+      if (item.summary) { const p = document.createElement("p"); p.className = "sum"; p.textContent = item.summary; body.appendChild(p); }
+      if (item.note) { const n = document.createElement("p"); n.className = "note"; n.textContent = item.note; body.appendChild(n); }
+      if (item.meta) { const m = document.createElement("div"); m.className = "meta"; m.textContent = item.meta; body.appendChild(m); }
+      a.appendChild(body);
+      if (item.image && /^https?:/.test(item.image)) {
+        const fig = document.createElement("div"); fig.className = "media";
+        const img = new Image(); img.alt = ""; img.referrerPolicy = "no-referrer";
+        img.onload = () => { if (img.naturalWidth >= 200) a.classList.add("has-img"); else fig.remove(); };
+        img.onerror = () => fig.remove();                    // 圖壞掉就當沒有圖
+        img.src = item.image; fig.appendChild(img); a.appendChild(fig);
+      }
+      // 防烙印：每一則的位置微幅偏移
+      a.style.transform = "translate(" + (Math.random() * 14 - 7).toFixed(1) + "px," + (Math.random() * 10 - 5).toFixed(1) + "px)";
+      return a;
+    }
+
+    function show() {
+      const next = upcoming || pick();
+      if (!next) { $("status").textContent = "目前抓不到任何來源，稍後自動重試。"; return; }
+      const st = $("status"); if (st) st.remove();
+      const stage = $("stage");
+      const old = stage.querySelector(".slide.show");
+      const el = build(next); stage.appendChild(el);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("show")));
+      if (old) { old.classList.remove("show"); setTimeout(() => old.remove(), 900); }
+      current = next; shown++;
+      upcoming = pick();
+      document.documentElement.style.setProperty("--acc", SOURCES[next.k].color);
+      document.querySelectorAll(".src").forEach((s) => s.classList.toggle("on", s.dataset.k === next.k));
+      const nx = $("next"); nx.textContent = "";
+      if (upcoming) { const em = document.createElement("em"); em.textContent = "下一則 · " + SOURCES[upcoming.k].name + "　"; nx.appendChild(em); nx.appendChild(document.createTextNode(upcoming.item.title)); }
+      $("count").textContent = "第 " + shown + " 則" + (paused ? " · 已暫停" : "");
+      startedAt = performance.now();
+    }
+
+    function tickBar() {
+      if (!paused && startedAt) {
+        const f = Math.min(1, (performance.now() - startedAt) / (SECONDS * 1000));
+        $("bar").style.width = (f * 100).toFixed(2) + "%";
+        if (f >= 1) show();
+      }
+      requestAnimationFrame(tickBar);
+    }
+
+    function clock() {
+      const d = new Date();
+      $("clock").textContent = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+      $("date").textContent = d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0") + " 週" + "日一二三四五六"[d.getDay()];
+      document.body.classList.toggle("night", d.getHours() >= 23 || d.getHours() < 7);   // 深夜自動調暗
+    }
+
+    // 螢幕不休眠（瀏覽器支援時）
+    let lock = null;
+    async function keepAwake() { try { if ("wakeLock" in navigator && document.visibilityState === "visible") lock = await navigator.wakeLock.request("screen"); } catch (_) {} }
+    document.addEventListener("visibilitychange", keepAwake);
+
+    // 可選的鍵盤操作（平常不需要碰）：←/→ 上下則、空白鍵暫停、F 全螢幕
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") show();
+      else if (e.key === " ") { paused = !paused; if (!paused) startedAt = performance.now(); $("count").textContent = "第 " + shown + " 則" + (paused ? " · 已暫停" : ""); e.preventDefault(); }
+      else if (e.key.toLowerCase() === "f") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
+    });
+    let idleT; const wake = () => { document.body.classList.remove("idle"); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add("idle"), 4000); };
+    document.addEventListener("mousemove", wake); wake();
+
+    (async function main() {
+      clock(); setInterval(clock, 10000);
+      renderSources();
+      await refresh();
+      show(); requestAnimationFrame(tickBar);
+      keepAwake();
+      setInterval(async () => { await refresh(); if (!current) show(); }, REFRESH_MIN * 60000);
+    })();
+  })();
+  </script>
+</body>
+</html>
