@@ -1,6 +1,18 @@
 {
   "days": [
     {
+      "date": "2026-11-16",
+      "label": "2026-11-16（一）",
+      "items": [
+        {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 晚間整理（新增 18 則）",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=2026111621"
+        }
+      ]
+    },
+    {
       "date": "2026-11-14",
       "label": "2026-11-14（六）",
       "items": [
