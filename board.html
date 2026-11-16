@@ -129,7 +129,7 @@
       learn:   { name: "學習",  color: "#b4a6f2", base: "../learning-daily/", load: loadLearning },
       weekend: { name: "週末",  color: "#ffb089", base: "../weekend-fun/",   load: loadWeekend },
     };
-    // 輪播節奏：每一輪固定這個順序，相鄰兩則一定來自不同來源；新聞與 X 內容多，出現較頻繁。
+    // 來源權重：出現次數越多，被抽到的機率越高（新聞與 X 內容多，比較常出現）；相鄰兩則一定不同來源。
     const PATTERN = ["news", "x", "insight", "news", "x", "weekend", "news", "x", "learn"];
 
     const $ = (id) => document.getElementById(id);
@@ -266,7 +266,7 @@
 
     // ---- 輪播 ----
     const queues = {};            // key -> { items, i }
-    let step = Math.floor(Math.random() * PATTERN.length), current = null, upcoming = null, timer = null, paused = false, shown = 0, startedAt = 0;
+    let current = null, upcoming = null, timer = null, paused = false, shown = 0, startedAt = 0;
 
     async function refresh() {
       const keys = Object.keys(SOURCES).filter((k) => !ONLY.length || ONLY.includes(k));
@@ -292,18 +292,19 @@
     }
 
     function pick() {
-      const live = PATTERN.filter((k) => queues[k]);
+      // 來源：依權重隨機抽（PATTERN 裡出現幾次就是幾份權重），但不會連續兩則同一來源；
+      // 來源內：整輪洗牌後依序取，整輪播完才會重複。
+      const live = [...new Set(PATTERN)].filter((k) => queues[k]);
       if (!live.length) return null;
-      for (let n = 0; n < PATTERN.length; n++) {
-        const k = PATTERN[step++ % PATTERN.length];
-        const q = queues[k]; if (!q) continue;
-        if (current && current.k === k && new Set(live).size > 1) continue;   // 相鄰不重複來源
-        const item = q.items[q.i++ % q.items.length];
-        if (q.i % q.items.length === 0) { q.items = order(q.items); if (q.items.length > 1 && q.items[0] === item) q.items.push(q.items.shift()); }
-        return { k, item };
-      }
-      const k = live[0], q = queues[k];
-      return { k, item: q.items[q.i++ % q.items.length] };
+      let pool = live.filter((k) => !(current && current.k === k));
+      if (!pool.length) pool = live;
+      const total = pool.reduce((n, k) => n + PATTERN.filter((x) => x === k).length, 0);
+      let r = Math.random() * total, k = pool[0];
+      for (const c of pool) { r -= PATTERN.filter((x) => x === c).length; if (r < 0) { k = c; break; } }
+      const q = queues[k];
+      const item = q.items[q.i++ % q.items.length];
+      if (q.i % q.items.length === 0) { q.items = order(q.items); if (q.items.length > 1 && q.items[0] === item) q.items.push(q.items.shift()); }
+      return { k, item };
     }
 
     function build({ k, item }) {

@@ -29,7 +29,7 @@ python3 scripts/add_link.py \
 
 ## 常駐看板（board.html）
 
-<https://penguin-yeh.github.io/link-hub/board.html> 是給外接螢幕常駐用的看板：不用互動，每 20 秒自動換一則，內容直接從各網站的最新頁面抓（新聞、X、洞察、學習、週末），相鄰兩則一定來自不同來源。
+<https://penguin-yeh.github.io/link-hub/board.html> 是給外接螢幕常駐用的看板：不用互動，每 20 秒自動換一則，內容直接從各網站的最新頁面抓（新聞、X、洞察、學習、週末），來源依權重隨機抽（新聞、X 較常出現），相鄰兩則一定不同來源；每個來源內整輪洗牌後才會重複。
 
 - 參數：`?t=30` 改每則停留秒數；`?src=news,x` 只看部分來源（`news`、`x`、`insight`、`learn`、`weekend`）。
 - 每 20 分鐘自動重抓（不用改 board.html，各網站更新後看板自己跟上）；`?dim=1` 可開啟 23:00–07:00 自動調暗（預設關閉）；支援的瀏覽器會阻止螢幕休眠。
