@@ -9,6 +9,12 @@
           "bot": "X 監控員",
           "title": "X 晚間整理（新增 18 則）",
           "href": "https://penguin-yeh.github.io/x-trends/?v=2026111621"
+        },
+        {
+          "category": "成長",
+          "bot": "Penguin",
+          "title": "CSAPP × DDIA 2e 學習進度",
+          "href": "https://penguin-yeh.github.io/csapp-ddia-study/"
         }
       ]
     },
