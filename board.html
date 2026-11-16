@@ -10,11 +10,11 @@
   <style>
     /* 常駐看板：不用互動，自動輪播各來源的單則內容。風格沿用 STYLE.md「報社總編桌」的深色 token。 */
     :root {
-      --bg: #0b0a09;
-      --fg: #f4efe6;
-      --muted: #a79c8d;
-      --faint: #6f665b;
-      --line: #2b2722;
+      --bg: #12110f;
+      --fg: #fbf8f2;
+      --muted: #c9bfb0;
+      --faint: #948a7c;
+      --line: #3a352e;
       --gold: #e2b15a;
       --serif: "Iowan Old Style", Palatino, "Palatino Linotype", "Songti TC", "Noto Serif TC", "PMingLiU", serif;
       --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -57,7 +57,7 @@
       text-decoration: none; color: inherit;
     }
     .slide.show { opacity: 1; }
-    .slide.has-img { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+    .slide.has-img { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
     .body { min-width: 0; display: flex; flex-direction: column; gap: 2.2vh; }
     .kicker { display: flex; flex-wrap: wrap; align-items: center; gap: .8em; font-family: var(--mono); font-size: clamp(.85rem, 1.25vw, 1.5rem); letter-spacing: .08em; }
     .chip { background: var(--acc); color: #0b0a09; font-weight: 700; padding: .22em .75em; border-radius: 4px; }
@@ -70,7 +70,7 @@
     }
     .slide.long h1 { font-size: clamp(1.6rem, 3.4vw, 4.1rem); }
     .sum {
-      margin: 0; color: #d9d2c6; line-height: 1.6;
+      margin: 0; color: #efe9de; line-height: 1.6;
       font-size: clamp(1.05rem, 1.85vw, 2.2rem);
       display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden;
     }
@@ -118,6 +118,7 @@
     const params = new URLSearchParams(location.search);
     const SECONDS = Math.max(6, Number(params.get("t")) || 20);     // 每則停留秒數：?t=30
     const REFRESH_MIN = 20;                                          // 每 20 分鐘重抓內容
+    const DIM = params.get("dim") === "1";                           // 深夜自動調暗：預設關閉，?dim=1 開啟
     const ONLY = (params.get("src") || "").split(",").filter(Boolean); // 只看部分來源：?src=news,x
 
     // 來源定義。顏色取自 STYLE.md 的類別色（深色版 --mark）。
@@ -134,7 +135,11 @@
     const $ = (id) => document.getElementById(id);
     const txt = (el) => (el ? el.textContent.replace(/\s+/g, " ").trim() : "");
     const abs = (href, base) => { try { return new URL(href, new URL(base, location.href)).href; } catch (_) { return ""; } };
+    const pic = (el, base) => { const i = el.querySelector("img[src]"); return i ? abs(i.getAttribute("src"), base) : ""; };   // 該則自己的圖，沒有就空字串
     const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+    // 有圖的排前面（各自打亂），讓看板一開始就多一點畫面
+    const order = (items) => [...shuffle(items.filter((x) => x.image)), ...shuffle(items.filter((x) => !x.image))];
 
     async function getDoc(url) {
       const res = await fetch(url + (url.includes("?") ? "&" : "?") + "v=" + Date.now(), { cache: "no-store" });
@@ -188,12 +193,12 @@
           const zh = p.querySelector(".zh"); const label = zh && zh.querySelector(".zl"); if (label) label.remove();
           const body = txt(zh) || txt(p.querySelector(".tx"));
           if (!body) return;
-          out.push({ title: body, sub: [who, txt(p.querySelector(".co"))].filter(Boolean).join(" · "), summary: txt(p.querySelector(".role")), meta: when, href: abs("#" + (p.id || date), base) });
+          out.push({ title: body, sub: [who, txt(p.querySelector(".co"))].filter(Boolean).join(" · "), summary: txt(p.querySelector(".role")), meta: when, image: pic(p, base), href: abs("#" + (p.id || date), base) });
         } else {
           const title = txt(p.querySelector(".pt"));
           if (!title) return;                               // 置頂摘要沒有 .pt，略過
           const a = p.querySelector("a.btn");
-          out.push({ title, sub: who, summary: txt(p.querySelector(".ps")), meta: date, href: a ? a.href : abs("#" + date, base) });
+          out.push({ title, sub: who, summary: txt(p.querySelector(".ps")), meta: date, image: pic(p, base), href: a ? a.href : abs("#" + date, base) });
         }
       });
       return out;
@@ -209,7 +214,7 @@
       if (verdict) out.push({ title: "今日判讀", sub: "分析觀點", summary: verdict, note: txt(day.querySelector(".today")), meta: date, href: abs("#" + date, base) });
       day.querySelectorAll("article.card").forEach((c) => {
         const h = txt(c.querySelector("h3")); if (!h) return;
-        out.push({ title: h, sub: "我的見解", summary: txt(c.querySelector(".view p")) || txt(c.querySelector(".ana")), note: txt(c.querySelector(".learn p")), meta: date, href: abs("#" + c.id, base) });
+        out.push({ title: h, sub: "我的見解", summary: txt(c.querySelector(".view p")) || txt(c.querySelector(".ana")), note: txt(c.querySelector(".learn p")), meta: date, image: pic(c, base), href: abs("#" + c.id, base) });
       });
       return out;
     }
@@ -268,7 +273,7 @@
       await Promise.all(keys.map(async (k) => {
         try {
           const items = (await SOURCES[k].load(SOURCES[k].base)).filter((x) => x && x.title);
-          if (items.length) queues[k] = { items: shuffle(items), i: 0 };
+          if (items.length) queues[k] = { items: order(items), i: 0 };
         } catch (err) { console.warn("[board] " + k + " 載入失敗", err); }
       }));
       renderSources();
@@ -294,7 +299,7 @@
         const q = queues[k]; if (!q) continue;
         if (current && current.k === k && new Set(live).size > 1) continue;   // 相鄰不重複來源
         const item = q.items[q.i++ % q.items.length];
-        if (q.i % q.items.length === 0) shuffle(q.items);
+        if (q.i % q.items.length === 0) q.items = order(q.items);
         return { k, item };
       }
       const k = live[0], q = queues[k];
@@ -361,7 +366,7 @@
       const d = new Date();
       $("clock").textContent = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
       $("date").textContent = d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0") + " 週" + "日一二三四五六"[d.getDay()];
-      document.body.classList.toggle("night", d.getHours() >= 23 || d.getHours() < 7);   // 深夜自動調暗
+      document.body.classList.toggle("night", DIM && (d.getHours() >= 23 || d.getHours() < 7));
     }
 
     // 螢幕不休眠（瀏覽器支援時）
