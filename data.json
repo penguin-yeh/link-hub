@@ -5,6 +5,12 @@
       "label": "2026-11-23（一）",
       "items": [
         {
+          "category": "X",
+          "bot": "X 監控員",
+          "title": "X 早報",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=20261123"
+        },
+        {
           "category": "學習",
           "bot": "成長教練",
           "title": "每週技術精讀：HyperLogLog 論文（W1）",
