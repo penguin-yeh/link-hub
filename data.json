@@ -1,6 +1,18 @@
 {
   "days": [
     {
+      "date": "2026-11-23",
+      "label": "2026-11-23（一）",
+      "items": [
+        {
+          "category": "學習",
+          "bot": "成長教練",
+          "title": "每週技術精讀：HyperLogLog 論文（W1）",
+          "href": "https://penguin-yeh.github.io/csapp-ddia-study/"
+        }
+      ]
+    },
+    {
       "date": "2026-11-22",
       "label": "2026-11-22（日）",
       "items": [
