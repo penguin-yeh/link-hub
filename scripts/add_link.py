@@ -4,6 +4,7 @@
 import argparse
 import html
 import json
+import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -47,12 +48,13 @@ def load_data():
 def clean_link(link):
     if not isinstance(link, dict):
         return None
+    section = str(link.get("section") or "").strip()
     title = str(link.get("title") or "").strip()
     href = str(link.get("href") or "").strip()
     note = str(link.get("note") or "").strip()
-    if not title or not href:
+    if not section or not title or not href:
         return None
-    cleaned = {"title": title, "href": href}
+    cleaned = {"section": section, "title": title, "href": href}
     if note:
         cleaned["note"] = note
     return cleaned
@@ -164,20 +166,59 @@ def upsert(days, day, category, bot, title, href, slot=None):
     bucket["items"] = canonical_items(bucket["items"])
 
 
+NOTE_LINK = re.compile(r"\[([^\]]+)\]\((https?://[^\s)]+)\)")
+
+
+def render_note(note):
+    if not note:
+        return ""
+    pieces = []
+    cursor = 0
+    for match in NOTE_LINK.finditer(note):
+        pieces.append(html.escape(note[cursor:match.start()]))
+        text = html.escape(match.group(1))
+        url = html.escape(match.group(2), quote=True)
+        pieces.append(f'<a href="{url}" rel="noopener noreferrer">{text}</a>')
+        cursor = match.end()
+    pieces.append(html.escape(note[cursor:]))
+    return "".join(pieces)
+
+
+def group_sections(links):
+    order = []
+    groups = {}
+    for link in links:
+        name = link["section"]
+        if name not in groups:
+            order.append(name)
+            groups[name] = []
+        groups[name].append(link)
+    return [(name, groups[name]) for name in order]
+
+
 def write_savings_page(day, bot, links, page_title):
     label = weekday_label(day)
     esc = html.escape
-    rows = []
-    for link in links:
-        note = link.get("note") or ""
-        note_html = f'<p class="note">{esc(note)}</p>' if note else ""
-        rows.append(
-            "<li>"
-            f'<a href="{esc(link["href"], quote=True)}" rel="noopener noreferrer">{esc(link["title"])}</a>'
-            f"{note_html}"
-            "</li>"
+    sections = []
+    for name, entries in group_sections(links):
+        rows = []
+        for link in entries:
+            note = link.get("note") or ""
+            note_html = f'<p class="note">{render_note(note)}</p>' if note else ""
+            rows.append(
+                "<li>"
+                f'<a href="{esc(link["href"], quote=True)}" rel="noopener noreferrer">{esc(link["title"])}</a>'
+                f"{note_html}"
+                "</li>"
+            )
+        sections.append(
+            '<section class="group">'
+            f"<h2>{esc(name)}</h2>"
+            '<ul class="links">'
+            + "\n          ".join(rows)
+            + "</ul></section>"
         )
-    items_html = "\n        ".join(rows)
+    items_html = "\n        ".join(sections)
     page = f"""<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -258,14 +299,21 @@ def write_savings_page(day, bot, links, page_title):
     }}
     .gate-error {{ margin: 0.7rem 0 0; color: #8d2f2f; }}
     @media (prefers-color-scheme: dark) {{ .gate-error {{ color: #f0b4b4; }} }}
+    .group {{ margin: 0 0 1.5rem; }}
+    .group h2 {{
+      margin: 0 0 0.65rem; padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--serif); font-size: 1.2rem; font-weight: 600;
+    }}
     .links {{ list-style: none; margin: 0; padding: 0; }}
     .links li {{
       background: var(--fill); color: var(--ink); border-radius: 1rem;
       padding: 0.9rem 1rem; margin: 0 0 0.65rem;
     }}
-    .links a {{ color: var(--ink); font-weight: 700; text-decoration: none; overflow-wrap: anywhere; }}
-    .links a:hover {{ text-decoration: underline; text-underline-offset: 0.18em; }}
+    .links > li > a {{ color: var(--ink); font-weight: 700; text-decoration: none; overflow-wrap: anywhere; }}
+    .links > li > a:hover {{ text-decoration: underline; text-underline-offset: 0.18em; }}
     .note {{ margin: 0.4rem 0 0; color: var(--soft); overflow-wrap: anywhere; }}
+    .note a {{ color: var(--mark); font-weight: 600; text-underline-offset: 0.15em; }}
   </style>
 </head>
 <body>
@@ -288,9 +336,7 @@ def write_savings_page(day, bot, links, page_title):
         </form>
       </section>
       <div id="desk" hidden>
-        <ul class="links">
         {items_html}
-        </ul>
       </div>
     </div>
   </main>
@@ -358,7 +404,7 @@ def write_savings_page(day, bot, links, page_title):
 
 
 def upsert_list(days, day, category, bot, links, title=None):
-    page_title = title.strip() if title and str(title).strip() else f"AI 免費額度（{len(links)} 則）"
+    page_title = title.strip() if title and str(title).strip() else f"省錢情報（{len(links)} 則）"
     write_savings_page(day, bot, links, page_title)
     upsert(
         days,
@@ -390,14 +436,15 @@ def partition(days):
 
 def parse_link_arg(value):
     parts = str(value).split("|")
-    if len(parts) < 3:
-        raise argparse.ArgumentTypeError("連結須為 title|note|href")
-    title = parts[0].strip()
+    if len(parts) < 4:
+        raise argparse.ArgumentTypeError("連結須為 section|title|note|href")
+    section = parts[0].strip()
+    title = parts[1].strip()
     href = parts[-1].strip()
-    note = "|".join(parts[1:-1]).strip()
-    if not title or not href:
-        raise argparse.ArgumentTypeError("連結的 title 與 href 不可為空白")
-    cleaned = {"title": title, "href": href}
+    note = "|".join(parts[2:-1]).strip()
+    if not section or not title or not href:
+        raise argparse.ArgumentTypeError("連結的 section、title 與 href 不可為空白")
+    cleaned = {"section": section, "title": title, "href": href}
     if note:
         cleaned["note"] = note
     return cleaned
@@ -412,7 +459,7 @@ def load_links_json(path):
     for entry in payload:
         cleaned = clean_link(entry)
         if cleaned is None:
-            raise SystemExit("--links-json 含有缺少 title 或 href 的項目")
+            raise SystemExit("--links-json 含有缺少 section、title 或 href 的項目")
         links.append(cleaned)
     return links
 
@@ -436,9 +483,9 @@ def build_parser():
         default=[],
         dest="links",
         type=parse_link_arg,
-        help="省錢清單的一筆，格式 title|note|href，可重複",
+        help="省錢清單的一筆，格式 section|title|note|href，可重複",
     )
-    parser.add_argument("--links-json", help="省錢清單 JSON 檔，內容為 [{title, note, href}, ...]")
+    parser.add_argument("--links-json", help="省錢清單 JSON 檔，內容為 [{section, title, note, href}, ...]")
     return parser
 
 

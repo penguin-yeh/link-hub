@@ -57,15 +57,24 @@ python3 scripts/add_link.py \
 
 這不會蓋掉同一天 `--category X` 且未指定 `--slot` 的「X 早報」或「X 晚間整理」。同一天重複跑 `--slot ai-picks` 只會更新這一筆。
 
-「省錢」一天仍是一則，總站卡片只放這一則，點進去才是當天清單。腳本會覆寫 `savings/YYYY-MM-DD.html`，並把 `data.json` 寫成一般連結：標題預設為 `AI 免費額度（N 則）`，也可用 `--title` 自訂；網址是 `https://penguin-yeh.github.io/link-hub/savings/YYYY-MM-DD.html`。清單用可重複的 `--link '標題|說明|網址'`，或 `--links-json` 指向 `[{title, note, href}, ...]`。同一天再跑會換掉該頁和這一則，不會動到其他類別。
+「省錢」一天在總站仍是一則。標題預設為 `省錢情報（N 則）`，也可用 `--title` 自訂。網址是 `https://penguin-yeh.github.io/link-hub/savings/YYYY-MM-DD.html`。腳本會覆寫該頁：依輸入順序分子分類，每則是標題連結加說明；說明裡的 `[文字](網址)` 會變成連結。同一天再跑會換掉該頁和這一則，不會動到其他類別。
+
+清單用 `--links-json`，內容是 `[{"section","title","note","href"}, ...]`，或可重複的 `--link '子分類|標題|說明|網址'`。
 
 ```bash
 python3 scripts/add_link.py \
   --date 2026-11-25 \
   --category 省錢 \
   --bot "X Free Credits Finder" \
-  --link 'Renoise $200 額度抽 2 人|追蹤 @renoiseai 並轉推（官方帳號，AI 影片）|https://x.com/renoiseai/status/2125263159816827176' \
-  --link 'Spiral 免費額度|轉推並留言（官方帳號，沒寫額度多少）|https://x.com/spiraldotai/status/2125273409848533178'
+  --links-json savings-2026-11-25.json
+```
+
+`savings-2026-11-25.json` 例如：
+
+```json
+[
+  {"section": "電商檔期", "title": "蝦皮 11/25 商城狂購節", "note": "全站滿 100 折 50，今天限定", "href": "https://shopee.tw/m/shopee-mall-sale"}
+]
 ```
 
 **修改頁面或新增類別前，請先讀 [STYLE.md](STYLE.md)（「報社總編桌」風格與新增類別步驟）。**
