@@ -7,7 +7,8 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-CATEGORIES = ("新聞", "洞察", "X", "學習", "記帳", "週末")
+CATEGORIES = ("新聞", "洞察", "X", "學習", "記帳", "省錢", "週末")
+LIST_CATEGORIES = ("省錢",)
 WEEKDAYS = "一二三四五六日"
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "data.json"
@@ -52,7 +53,7 @@ def clean_link(link):
 
 
 def item_slot(item):
-    """Dedupe slot for a plain (non-tab) item; missing/blank slot equals the category name."""
+    """Dedupe slot for a plain item; missing or blank slot equals the category name."""
     slot = item.get("slot")
     if slot is None or not str(slot).strip():
         return item.get("category")
@@ -62,23 +63,21 @@ def item_slot(item):
 def clean_item(item):
     if not isinstance(item, dict):
         return None
-    tab = str(item.get("tab") or "").strip()
-    if tab:
+    category = item.get("category")
+    links_raw = item.get("links")
+    if category in LIST_CATEGORIES and isinstance(links_raw, list):
         links = []
-        for link in item.get("links") or []:
+        for link in links_raw:
             cleaned = clean_link(link)
             if cleaned:
                 links.append(cleaned)
         if not links:
             return None
-        return {
-            "category": item.get("category"),
-            "tab": tab,
-            "bot": item.get("bot"),
-            "links": links,
-        }
+        return {"category": category, "bot": item.get("bot"), "links": links}
+    if str(item.get("tab") or "").strip():
+        return None
     cleaned = {
-        "category": item.get("category"),
+        "category": category,
         "bot": item.get("bot"),
         "title": item.get("title"),
         "href": item.get("href"),
@@ -90,23 +89,18 @@ def clean_item(item):
 
 
 def canonical_items(items):
-    """同一 (類別, slot) 的一般連結只留最後一筆；帶 tab 的清單另計，不會互相覆蓋。
+    """同一 (類別, slot) 的一般連結只留最後一筆。清單類別（省錢）另計，一天一份。
     未指定 slot 時等同於類別名，因此沒加 --slot 的行為與以前相同。"""
     plain = {}
-    tabs = {}
-    tab_order = []
+    lists = {}
     extras = []
     for item in items:
         cleaned = clean_item(item)
         if cleaned is None:
             continue
         category = cleaned.get("category")
-        tab = cleaned.get("tab")
-        if tab:
-            key = (category, tab)
-            if key not in tabs:
-                tab_order.append(key)
-            tabs[key] = cleaned
+        if category in LIST_CATEGORIES and cleaned.get("links"):
+            lists[category] = cleaned
         elif category in CATEGORIES:
             plain[(category, item_slot(cleaned))] = cleaned
         else:
@@ -118,9 +112,8 @@ def canonical_items(items):
         for (category, slot), entry in plain.items():
             if category == name and slot != name:
                 ordered.append(entry)
-        for key in tab_order:
-            if key[0] == name:
-                ordered.append(tabs[key])
+        if name in lists:
+            ordered.append(lists[name])
     ordered.extend(extras)
     return ordered
 
@@ -170,11 +163,7 @@ def upsert(days, day, category, bot, title, href, slot=None):
     slot = slot if slot is not None and str(slot).strip() else category
     bucket["items"] = [
         item for item in bucket["items"]
-        if not (
-            item.get("category") == category
-            and not item.get("tab")
-            and item_slot(item) == slot
-        )
+        if not (item.get("category") == category and item_slot(item) == slot)
     ]
     entry = {"category": category, "bot": bot, "title": title, "href": href}
     if slot != category:
@@ -183,15 +172,10 @@ def upsert(days, day, category, bot, title, href, slot=None):
     bucket["items"] = canonical_items(bucket["items"])
 
 
-def upsert_tab(days, day, category, tab, bot, links):
+def upsert_list(days, day, category, bot, links):
     bucket = day_bucket(days, day)
-    bucket["items"] = [
-        item for item in bucket["items"]
-        if not (item.get("category") == category and item.get("tab") == tab)
-    ]
-    bucket["items"].append(
-        {"category": category, "tab": tab, "bot": bot, "links": links}
-    )
+    bucket["items"] = [item for item in bucket["items"] if item.get("category") != category]
+    bucket["items"].append({"category": category, "bot": bot, "links": links})
     bucket["items"] = canonical_items(bucket["items"])
 
 
@@ -255,16 +239,15 @@ def build_parser():
         help="同一天、同一類別內一般連結的區分鍵。預設等於 --category，因此不加時行為與以前相同。"
              "例如 AI 爆紅精選用 --category X --slot ai-picks，才不會蓋掉當天的 X 早報／晚間整理。",
     )
-    parser.add_argument("--tab", help="X 類別底下的分頁，例如 AI 免費額度")
     parser.add_argument(
         "--link",
         action="append",
         default=[],
         dest="links",
         type=parse_link_arg,
-        help="分頁清單的一筆，格式 title|note|href，可重複",
+        help="省錢清單的一筆，格式 title|note|href，可重複",
     )
-    parser.add_argument("--links-json", help="分頁清單 JSON 檔，內容為 [{title, note, href}, ...]")
+    parser.add_argument("--links-json", help="省錢清單 JSON 檔，內容為 [{title, note, href}, ...]")
     return parser
 
 
@@ -273,26 +256,26 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if not str(args.bot).strip():
         parser.error("bot 不可為空白")
-    if args.tab and args.slot:
-        parser.error("--slot 與 --tab 不要一起使用")
     if args.slot is not None and not str(args.slot).strip():
         parser.error("--slot 不可為空白")
 
     data = load_data()
     days = merge_days(list(data.get("days") or []) + list(data.get("history") or []))
-    if args.tab:
-        if args.category != "X":
-            parser.error("--tab 只用於類別 X")
+    if args.category in LIST_CATEGORIES:
+        if args.slot:
+            parser.error("--slot 不適用於省錢")
         links = []
         if args.links_json:
             links.extend(load_links_json(args.links_json))
         links.extend(args.links or [])
         if not links:
-            parser.error("請用 --link 或 --links-json 提供清單")
-        upsert_tab(days, args.date, args.category, args.tab.strip(), args.bot, links)
+            parser.error("省錢請用 --link 或 --links-json 提供清單")
+        if str(args.title or "").strip() or str(args.href or "").strip():
+            parser.error("省錢請用 --link 或 --links-json，不要用 --title／--href")
+        upsert_list(days, args.date, args.category, args.bot, links)
     else:
         if args.links or args.links_json:
-            parser.error("沒有 --tab 時不要使用 --link 或 --links-json")
+            parser.error("只有省錢可以使用 --link 或 --links-json")
         if not str(args.title or "").strip() or not str(args.href or "").strip():
             parser.error("bot、title、href 不可為空白")
         upsert(days, args.date, args.category, args.bot, args.title, args.href, slot=args.slot)
