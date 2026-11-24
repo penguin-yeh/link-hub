@@ -5,6 +5,12 @@
       "label": "2026-11-25（三）",
       "items": [
         {
+          "category": "記帳",
+          "bot": "記帳小幫手",
+          "title": "11/25 消費（今天還沒有記帳）",
+          "href": "https://penguin-yeh.github.io/expense-dashboard/?date=2026-11-25"
+        },
+        {
           "category": "省錢",
           "bot": "X Free Credits Finder",
           "title": "省錢情報",
