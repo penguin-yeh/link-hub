@@ -1111,6 +1111,7 @@
       blocks.className = "blocks";
 
       CATEGORIES.forEach((category) => {
+        if (category.name === "記帳" || category.name === "省錢") return;
         let items = (day.items || []).filter((item) => item.category === category.name);
         let carried = false;
         if (category.name === "週末") {
@@ -1165,6 +1166,7 @@
         blocks.appendChild(block);
       });
 
+      if (!blocks.childElementCount) return null;
       section.appendChild(blocks);
       return section;
     }
@@ -1173,7 +1175,8 @@
       const sources = weekendEntries(data);
       const fragment = document.createDocumentFragment();
       days.slice().sort(byDateDesc).forEach((day) => {
-        fragment.appendChild(renderDay(day, sources));
+        const section = renderDay(day, sources);
+        if (section) fragment.appendChild(section);
       });
       return fragment;
     }
@@ -1537,14 +1540,16 @@
       renderLegend(data);
       app.className = "";
       app.replaceChildren();
-      if (days.length) app.appendChild(renderDays(days, data));
+      const recent = renderDays(days, data);
+      if (recent.childNodes.length) app.appendChild(recent);
 
-      if (history.length) {
+      const older = renderDays(history, data);
+      if (older.childNodes.length) {
         const details = document.createElement("details");
         details.className = "history";
         const summary = document.createElement("summary");
         summary.textContent = "歷史";
-        details.append(summary, renderDays(history, data));
+        details.append(summary, older);
         app.appendChild(details);
       }
     }
