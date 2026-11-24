@@ -18,7 +18,7 @@ python3 -m http.server 8080
 
 首頁和看板會先問密碼，通過後把比對用的 hash 記在這台瀏覽器，下次（包含加到 iPhone 主畫面）就不用再輸入。密碼本身不會存下來。這只擋一下隨便點進來的人，`data.json` 和 `reminders.json` 仍然公開、可以直接抓，所以今日提醒在發布前會先淨化敏感內容。
 
-要換成新密碼，用下面這段產生 salt 與 hash，再同時換掉 `index.html` 和 `board.html` 裡的 `GATE_SALT`、`GATE_ITERATIONS`、`GATE_HASH`：
+要換成新密碼，用下面這段產生 salt 與 hash，再同時換掉 `index.html`、`board.html` 和 `scripts/add_link.py` 裡的 `GATE_SALT`、`GATE_ITERATIONS`、`GATE_HASH`。已產生的 `savings/*.html` 要再跑一次對應日期的省錢指令才會換上新 hash。
 
 ```python
 import os, base64, hashlib
@@ -57,7 +57,7 @@ python3 scripts/add_link.py \
 
 這不會蓋掉同一天 `--category X` 且未指定 `--slot` 的「X 早報」或「X 晚間整理」。同一天重複跑 `--slot ai-picks` 只會更新這一筆。
 
-「省錢」一天是一份清單，不是單一連結。用可重複的 `--link '標題|說明|網址'`，或 `--links-json` 指向 `[{title, note, href}, ...]`。同一天再跑一次會換掉當天整份省錢清單，不會動到其他類別。
+「省錢」一天仍是一則，總站卡片只放這一則，點進去才是當天清單。腳本會覆寫 `savings/YYYY-MM-DD.html`，並把 `data.json` 寫成一般連結：標題預設為 `AI 免費額度（N 則）`，也可用 `--title` 自訂；網址是 `https://penguin-yeh.github.io/link-hub/savings/YYYY-MM-DD.html`。清單用可重複的 `--link '標題|說明|網址'`，或 `--links-json` 指向 `[{title, note, href}, ...]`。同一天再跑會換掉該頁和這一則，不會動到其他類別。
 
 ```bash
 python3 scripts/add_link.py \
