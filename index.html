@@ -897,13 +897,6 @@
       </section>
       <div id="desk" hidden>
         <div id="reminders"></div>
-        <a class="pin cat-expense" href="https://penguin-yeh.github.io/expense-dashboard/" rel="noopener noreferrer">
-          <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><use href="#icon-expense"></use></svg></span>
-          <span>
-            <span class="title">消費儀表板</span>
-            <span class="bot">記帳小幫手</span>
-          </span>
-        </a>
         <a class="pin cat-save" href="https://penguin-yeh.github.io/savings/" rel="noopener noreferrer">
           <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><use href="#icon-save"></use></svg></span>
           <span>
@@ -1102,14 +1095,16 @@
       list.replaceChildren();
       CATEGORIES.forEach((category) => {
         const li = document.createElement("li");
-        const href = category.name === "週末" ? weekendChipHref(data) : latestHref(data, category.name);
+        const href = category.name === "記帳"
+          ? "https://penguin-yeh.github.io/expense-dashboard/"
+          : category.name === "週末" ? weekendChipHref(data) : latestHref(data, category.name);
         const chip = document.createElement(href ? "a" : "span");
         chip.className = "chip " + category.className + (href ? "" : " is-disabled");
         if (href) {
           chip.href = href;
-          chip.target = "_blank";
+          if (category.name !== "記帳") chip.target = "_blank";
           chip.rel = "noopener noreferrer";
-          chip.setAttribute("aria-label", "開啟最新的" + category.name);
+          chip.setAttribute("aria-label", category.name === "記帳" ? "開啟消費儀表板" : "開啟最新的" + category.name);
         } else {
           chip.setAttribute("aria-disabled", "true");
         }
