@@ -1118,8 +1118,23 @@
         chip.append(badge(category.icon), name);
         li.appendChild(chip);
         list.appendChild(li);
+        if (category.name === "記帳") list.appendChild(savingsChip());
       });
       list.hidden = false;
+    }
+
+    function savingsChip() {
+      const li = document.createElement("li");
+      const chip = document.createElement("a");
+      chip.className = "chip cat-save";
+      chip.href = "https://penguin-yeh.github.io/savings/";
+      chip.rel = "noopener noreferrer";
+      chip.setAttribute("aria-label", "開啟省錢情報");
+      const name = document.createElement("span");
+      name.textContent = "省錢";
+      chip.append(badge("icon-save"), name);
+      li.appendChild(chip);
+      return li;
     }
 
     function renderDay(day, sources) {
