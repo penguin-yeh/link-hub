@@ -4,7 +4,7 @@
 
 最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、週末。更早的日期收在摺疊的「歷史」。
 
-解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是兩則固定連結：「消費儀表板」（記帳小幫手）和「省錢情報」（X Free Credits Finder，<https://penguin-yeh.github.io/savings/>，那個站自己維護內容）。再來才是類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒，也不輪播學習。
+解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是兩則固定連結：「消費儀表板」（記帳小幫手）和「省錢情報」（X Free Credits Finder）。省錢不是每日類別，卡片和類別 chips 裡的「省錢」都連到 <https://penguin-yeh.github.io/savings/>，內容由那個站自己維護。再來才是其餘類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒，也不輪播學習。
 
 ## 本機預覽
 
