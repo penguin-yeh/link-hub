@@ -1,0 +1,235 @@
+{
+  "date": "2026-11-24",
+  "updated_at": "2026-11-25T01:25:47+08:00",
+  "morning": {
+    "header_small": "Apple 小秘書 · 11/24 (二)",
+    "headline": "週二早安，今天沒有行程 ☀️",
+    "sub": "3 件今天到期",
+    "sections": [
+      {
+        "label": "今天先做",
+        "rows": [
+          {
+            "text": "DDIA 2 🫯（週二固定，推進一小節）",
+            "color": "#EF6C3A"
+          },
+          {
+            "text": "多聽聽英文 🩵（通勤聽一集 BBC 財經）",
+            "color": "#20A4C8"
+          },
+          {
+            "text": "💼 工作待辦 1 件",
+            "color": "#5B6CF0"
+          }
+        ],
+        "style": "numbered"
+      },
+      {
+        "label": "今天的行程",
+        "rows": [
+          {
+            "tag": "11/24 (二)",
+            "text": "無行程",
+            "muted": true,
+            "color": "#C9CDD3"
+          }
+        ],
+        "style": "dot"
+      },
+      {
+        "label": "今天到期",
+        "rows": [
+          {
+            "text": "DDIA 2 🫯",
+            "color": "#EF6C3A"
+          },
+          {
+            "text": "東看看西看看 🫐",
+            "color": "#9B59D0"
+          },
+          {
+            "text": "多聽聽英文 🩵",
+            "color": "#20A4C8"
+          }
+        ],
+        "style": "dot"
+      },
+      {
+        "label": "小雜事（還沒做）",
+        "rows": [
+          {
+            "text": "記錄生活🌱",
+            "color": "#2BB673"
+          },
+          {
+            "text": "看看精油",
+            "color": "#9B59D0"
+          },
+          {
+            "text": "多練練車 / 看看路上的車 / 開車規則",
+            "color": "#F28C28"
+          },
+          {
+            "text": "整理房間!! 把每個東西放好位置",
+            "color": "#E5487B"
+          },
+          {
+            "text": "買肌酸",
+            "color": "#20A4C8"
+          },
+          {
+            "text": "測試 Grok Bot 連結 Tailscale",
+            "color": "#5B6CF0"
+          },
+          {
+            "text": "買牙刷／牙膏收納用品",
+            "color": "#EF6C3A"
+          },
+          {
+            "text": "買牙膏",
+            "color": "#2BB673"
+          },
+          {
+            "text": "買牙刷",
+            "color": "#9B59D0"
+          }
+        ],
+        "style": "dot"
+      },
+      {
+        "label": "今日小任務 🎲",
+        "rows": [
+          {
+            "text": "點一道從沒點過的菜 🍽️（晚餐順手試試就好）",
+            "color": "#F28C28"
+          }
+        ],
+        "style": "dot"
+      },
+      {
+        "label": "今日加碼 💪",
+        "rows": [
+          {
+            "text": "學攝影🌃：手機開網格，下班路上用三分法拍 3 張夜景｜Louis 週三攝影教室《三分鐘學會基本構圖》",
+            "color": "#E5487B"
+          },
+          {
+            "text": "LeetCode 刷刷 📍：做一題 Easy 的 Two Pointers（283. Move Zeroes）｜NeetCode《Move Zeroes - Leetcode 283》",
+            "color": "#5B6CF0"
+          }
+        ],
+        "style": "dot"
+      }
+    ],
+    "notes": [
+      "行程空著，先把 DDIA 推進一點 💪"
+    ]
+  },
+  "evening": {
+    "theme": "evening",
+    "header_small": "Apple 小秘書 · 11/24 (二) 傍晚",
+    "headline": "週二辛苦了，快下班囉 🌙",
+    "sub": "還有 3 件今天到期的事沒打勾",
+    "sections": [
+      {
+        "label": "今天還沒完成",
+        "rows": [
+          {
+            "text": "DDIA 2 🫯",
+            "color": "#FFB86B"
+          },
+          {
+            "text": "東看看西看看 🫐",
+            "color": "#8B9BFF"
+          },
+          {
+            "text": "多聽聽英文 🩵",
+            "color": "#5FD3F3"
+          },
+          {
+            "text": "💼 工作待辦 1 件",
+            "color": "#C49BFF"
+          }
+        ],
+        "style": "dot"
+      },
+      {
+        "label": "小雜事（還沒做）",
+        "rows": [
+          {
+            "text": "記錄生活 🌱",
+            "color": "#4ADE80"
+          },
+          {
+            "text": "看看精油",
+            "color": "#C49BFF"
+          },
+          {
+            "text": "多練練車 / 看看路上的車 / 開車規則",
+            "color": "#FFB86B"
+          },
+          {
+            "text": "整理房間!! 把每個東西放好位置",
+            "color": "#FF7BA9"
+          },
+          {
+            "text": "買肌酸",
+            "color": "#5FD3F3"
+          },
+          {
+            "text": "測試 Grok Bot 連結 Tailscale",
+            "color": "#8B9BFF"
+          },
+          {
+            "text": "買牙刷／牙膏收納用品",
+            "color": "#FF9F6B"
+          },
+          {
+            "text": "買牙膏",
+            "color": "#4ADE80"
+          },
+          {
+            "text": "買牙刷",
+            "color": "#C49BFF"
+          }
+        ],
+        "style": "dot"
+      },
+      {
+        "label": "今晚的行程",
+        "rows": [
+          {
+            "tag": "11/24 (二)",
+            "text": "無行程",
+            "muted": true,
+            "color": "#4b5075"
+          }
+        ],
+        "style": "dot"
+      },
+      {
+        "label": "睡前清單",
+        "rows": [
+          {
+            "text": "伸展拉筋 🙆",
+            "color": "#4ADE80"
+          },
+          {
+            "text": "冥想 🧘",
+            "color": "#C49BFF"
+          },
+          {
+            "text": "Daily Recap",
+            "color": "#5FD3F3"
+          }
+        ],
+        "style": "numbered"
+      }
+    ],
+    "notes": [
+      "小任務：點一道從沒點過的菜 🍽️，晚餐剛好可以試",
+      "今日加碼：學攝影🌃（下班路上拍 3 張夜景）、LeetCode 283，有空順手做一件",
+      "今晚行程空著，DDIA 推進一小節就很棒 💪"
+    ]
+  }
+}
