@@ -1116,35 +1116,6 @@
       list.hidden = false;
     }
 
-    function renderLinkList(entries) {
-      const list = document.createElement("ul");
-      list.className = "links";
-      entries.forEach((entry) => {
-        const href = safeHref(entry.href);
-        if (!href) return;
-        const li = document.createElement("li");
-        const link = document.createElement("a");
-        link.href = href;
-        link.rel = "noopener noreferrer";
-
-        const name = document.createElement("span");
-        name.className = "title";
-        name.textContent = entry.title || href;
-        link.appendChild(name);
-
-        const note = entry.note || "";
-        if (note) {
-          const meta = document.createElement("span");
-          meta.className = "bot";
-          meta.textContent = note;
-          link.appendChild(meta);
-        }
-        li.appendChild(link);
-        list.appendChild(li);
-      });
-      return list;
-    }
-
     function renderDay(day, sources) {
       const section = document.createElement("section");
       section.className = "day";
@@ -1188,33 +1159,6 @@
         head.className = "block-head";
         const title = document.createElement("h3");
         title.textContent = category.name;
-        const lists = items.filter((item) => Array.isArray(item.links) && item.links.length && !safeHref(item.href));
-        const singles = items.filter((item) => !lists.includes(item));
-        if (lists.length && !singles.length) {
-          const label = document.createElement("div");
-          label.appendChild(title);
-          const source = document.createElement("span");
-          source.className = "bot";
-          source.textContent = lists[0].bot || "";
-          label.appendChild(source);
-          head.append(badge(category.icon), label);
-          if (carried) {
-            const tag = document.createElement("span");
-            tag.className = "carry";
-            tag.textContent = "本週末";
-            head.appendChild(tag);
-          }
-          block.appendChild(head);
-          const combined = [];
-          lists.forEach((item) => {
-            (item.links || []).forEach((link) => combined.push(link));
-          });
-          const list = renderLinkList(combined);
-          if (!list.childElementCount) return;
-          block.appendChild(list);
-          blocks.appendChild(block);
-          return;
-        }
         head.append(badge(category.icon), title);
         if (carried) {
           const tag = document.createElement("span");
