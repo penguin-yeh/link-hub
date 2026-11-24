@@ -292,37 +292,6 @@
       overflow-wrap: anywhere;
     }
 
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin: 0 0 0.2rem;
-    }
-
-    .tabs button {
-      min-height: 2.25rem;
-      padding: 0.25rem 0.75rem;
-      border: 1px solid var(--hairline);
-      border-radius: 999px;
-      background: transparent;
-      color: var(--soft);
-      font: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .tabs button[aria-selected="true"] {
-      background: var(--mark);
-      color: var(--mark-ink);
-      border-color: transparent;
-    }
-
-    .tabs button:focus-visible {
-      outline: 2px solid var(--mark);
-      outline-offset: 2px;
-    }
-
     .cat-news {
       --fill: #dce8f8;
       --ink: #16345c;
@@ -375,6 +344,15 @@
       --mark: #9b2f55;
       --mark-ink: #fff6f8;
       --hairline: rgba(155, 47, 85, 0.2);
+    }
+
+    .cat-save {
+      --fill: #e3f3f6;
+      --ink: #0e3c48;
+      --soft: #3d6b76;
+      --mark: #0e7490;
+      --mark-ink: #f3fbfd;
+      --hairline: rgba(14, 116, 144, 0.2);
     }
 
     .cat-weekend {
@@ -449,6 +427,15 @@
         --mark: #f0a0c0;
         --mark-ink: #3a1828;
         --hairline: rgba(240, 160, 192, 0.3);
+      }
+
+      .cat-save {
+        --fill: #143038;
+        --ink: #dff6f8;
+        --soft: #a9d4db;
+        --mark: #7fd3e4;
+        --mark-ink: #102428;
+        --hairline: rgba(127, 211, 228, 0.3);
       }
 
       .cat-weekend {
@@ -916,6 +903,10 @@
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M7 3.8h8.2l2.3 2.3V20.2H7V3.8Z"/>
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.2 3.9v2.3h2.2M9.3 10.2h5.4M9.3 13.4h5.4M9.3 16.6h3.2"/>
     </symbol>
+    <symbol id="icon-save" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M4.8 12.5 12.1 5.2h6.4v6.4l-7.3 7.3a1.2 1.2 0 0 1-1.7 0l-4.7-4.7a1.2 1.2 0 0 1 0-1.7Z"/>
+      <circle cx="15.5" cy="8.6" r="1.15" fill="none" stroke="currentColor" stroke-width="1.7"/>
+    </symbol>
     <symbol id="icon-weekend" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="3.15" fill="none" stroke="currentColor" stroke-width="1.7"/>
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 3.2v2.15M12 18.65V20.8M3.2 12h2.15M18.65 12H20.8M6.05 6.05l1.5 1.5M16.45 16.45l1.5 1.5M17.95 6.05l-1.5 1.5M7.55 16.45l-1.5 1.5"/>
@@ -967,6 +958,7 @@
       { name: "X", className: "cat-x", icon: "icon-x" },
       { name: "學習", className: "cat-learn", icon: "icon-learn" },
       { name: "記帳", className: "cat-expense", icon: "icon-expense" },
+      { name: "省錢", className: "cat-save", icon: "icon-save" },
       { name: "週末", className: "cat-weekend", icon: "icon-weekend" }
     ];
 
@@ -993,6 +985,7 @@
     }
 
     function safeHref(href) {
+      if (typeof href !== "string" || !href.trim()) return null;
       try {
         const url = new URL(href, window.location.href);
         if (url.protocol === "http:" || url.protocol === "https:") return url.href;
@@ -1024,16 +1017,26 @@
       return dt.getUTCFullYear() + "-" + month + "-" + day;
     }
 
+    function entryHref(entry) {
+      if (!entry) return null;
+      const direct = safeHref(entry.href);
+      if (direct) return direct;
+      const links = Array.isArray(entry.links) ? entry.links : [];
+      for (let i = 0; i < links.length; i += 1) {
+        const href = safeHref(links[i] && links[i].href);
+        if (href) return href;
+      }
+      return null;
+    }
+
     function latestHref(data, categoryName) {
       const pools = [data.days || [], data.history || []];
       for (let i = 0; i < pools.length; i += 1) {
         const sorted = pools[i].slice().sort(byDateDesc);
         for (let j = 0; j < sorted.length; j += 1) {
-          const item = (sorted[j].items || []).find((entry) => {
-            return entry.category === categoryName && !entry.tab && safeHref(entry.href);
-          });
+          const item = (sorted[j].items || []).find((entry) => entryHref(entry) && entry.category === categoryName);
           if (!item) continue;
-          return safeHref(item.href);
+          return entryHref(item);
         }
       }
       return null;
@@ -1183,58 +1186,6 @@
       return list;
     }
 
-    function renderXTabs(items) {
-      const panels = [];
-      const plain = items.filter((item) => !item.tab);
-      if (plain.length) {
-        panels.push({
-          name: "整理",
-          entries: plain.map((item) => ({ title: item.title, note: item.bot, href: item.href }))
-        });
-      }
-      items.filter((item) => item.tab).forEach((item) => {
-        panels.push({
-          name: item.tab,
-          entries: (item.links || []).map((link) => ({
-            title: link.title,
-            note: link.note,
-            href: link.href
-          }))
-        });
-      });
-
-      const wrap = document.createElement("div");
-      const tablist = document.createElement("div");
-      tablist.className = "tabs";
-      tablist.setAttribute("role", "tablist");
-      tablist.setAttribute("aria-label", "X");
-      const panel = document.createElement("div");
-
-      function show(index) {
-        [...tablist.querySelectorAll("button")].forEach((button, buttonIndex) => {
-          const selected = buttonIndex === index;
-          button.setAttribute("aria-selected", selected ? "true" : "false");
-          button.tabIndex = selected ? 0 : -1;
-        });
-        const list = renderLinkList(panels[index].entries);
-        panel.replaceChildren(list.childElementCount ? list : document.createTextNode(""));
-      }
-
-      panels.forEach((item, index) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.setAttribute("role", "tab");
-        button.textContent = item.name;
-        button.addEventListener("click", () => show(index));
-        tablist.appendChild(button);
-      });
-
-      if (!panels.length) return wrap;
-      wrap.append(tablist, panel);
-      show(0);
-      return wrap;
-    }
-
     function renderDay(day, sources) {
       const section = document.createElement("section");
       section.className = "day";
@@ -1278,6 +1229,33 @@
         head.className = "block-head";
         const title = document.createElement("h3");
         title.textContent = category.name;
+        const lists = items.filter((item) => Array.isArray(item.links) && item.links.length && !safeHref(item.href));
+        const singles = items.filter((item) => !lists.includes(item));
+        if (lists.length && !singles.length) {
+          const label = document.createElement("div");
+          label.appendChild(title);
+          const source = document.createElement("span");
+          source.className = "bot";
+          source.textContent = lists[0].bot || "";
+          label.appendChild(source);
+          head.append(badge(category.icon), label);
+          if (carried) {
+            const tag = document.createElement("span");
+            tag.className = "carry";
+            tag.textContent = "本週末";
+            head.appendChild(tag);
+          }
+          block.appendChild(head);
+          const combined = [];
+          lists.forEach((item) => {
+            (item.links || []).forEach((link) => combined.push(link));
+          });
+          const list = renderLinkList(combined);
+          if (!list.childElementCount) return;
+          block.appendChild(list);
+          blocks.appendChild(block);
+          return;
+        }
         head.append(badge(category.icon), title);
         if (carried) {
           const tag = document.createElement("span");
@@ -1286,14 +1264,6 @@
           head.appendChild(tag);
         }
         block.appendChild(head);
-
-        if (category.name === "X" && items.some((item) => item.tab)) {
-          const panel = renderXTabs(items);
-          if (!panel.childElementCount) return;
-          block.appendChild(panel);
-          blocks.appendChild(block);
-          return;
-        }
 
         const list = document.createElement("ul");
         list.className = "links";

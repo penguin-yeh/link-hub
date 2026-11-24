@@ -52,6 +52,7 @@
 | X | `cat-x` | 黑白 `#f6f6f6` 反相 |
 | 學習 | `cat-learn` | 靛紫 `#5240a8` |
 | 記帳 | `cat-expense` | 玫瑰 `#9b2f55` |
+| 省錢 | `cat-save` | 青 `#0e7490` |
 | 週末 | `cat-weekend` | 橘 `#d15a2c` |
 | 今日提醒（非連結類別，Apple 小秘書） | `cat-remind` | 松綠 `#2f6b45` |
 

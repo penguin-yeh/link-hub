@@ -2,7 +2,7 @@
 
 各個 bot 每天交來的連結，整理在同一頁。GitHub Pages 從 `main` 根目錄提供這個網站：<https://penguin-yeh.github.io/link-hub/>
 
-最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、週末。更早的日期收在摺疊的「歷史」。
+最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、省錢、週末。更早的日期收在摺疊的「歷史」。
 
 解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天，早上／傍晚各一筆）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是固定的「消費儀表板」（記帳小幫手）連結，再來才是類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒。
 
@@ -41,7 +41,7 @@ python3 scripts/add_link.py \
   --href "https://example.com/news"
 ```
 
-`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`週末`。同一天的同一類別、同一 `--slot` 會取代舊項目；未指定 `--slot` 時，slot 等於類別名稱，因此行為與以前相同（例如晚間的「X 晚間整理」會蓋掉當天的「X 早報」）。日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
+`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`省錢`、`週末`。同一天的同一類別、同一 `--slot` 會取代舊項目；未指定 `--slot` 時，slot 等於類別名稱，因此行為與以前相同（例如晚間的「X 晚間整理」會蓋掉當天的「X 早報」）。日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
 
 同一類別若要並存兩筆（例如 X 分類同時放早報／晚間整理和 AI 爆紅精選），加上不同的 `--slot`。自訂 slot 會寫進 `data.json` 的 `slot` 欄位；預設 slot 不會多寫這個欄位。前端會列出同一類別的多筆連結。
 
@@ -55,16 +55,15 @@ python3 scripts/add_link.py \
   --href "https://penguin-yeh.github.io/x-trends/?v=202611251440#ai"
 ```
 
-這不會蓋掉同一天 `--category X` 且未指定 `--slot` 的「X 早報」或「X 晚間整理」，也不會動到 `--tab` 分頁。同一天重複跑 `--slot ai-picks` 只會更新這一筆。`--slot` 與 `--tab` 不要一起用：`--slot` 是同一類別的另一筆一般連結（title／href）；`--tab` 是 X 底下帶清單的分頁。
+這不會蓋掉同一天 `--category X` 且未指定 `--slot` 的「X 早報」或「X 晚間整理」。同一天重複跑 `--slot ai-picks` 只會更新這一筆。
 
-X 底下可以有分頁。`--tab` 只用於類別 `X`，同一天的該分頁會整份換掉，不會動到當天的 X 早報或晚間整理；反過來更新早報或晚間也不會清掉分頁。清單用可重複的 `--link '標題|說明|網址'`，或 `--links-json` 指向一個 `[{title, note, href}, ...]` 檔案。
+「省錢」一天是一份清單，不是單一連結。用可重複的 `--link '標題|說明|網址'`，或 `--links-json` 指向 `[{title, note, href}, ...]`。同一天再跑一次會換掉當天整份省錢清單，不會動到其他類別。
 
 ```bash
 python3 scripts/add_link.py \
   --date 2026-11-25 \
-  --category X \
+  --category 省錢 \
   --bot "X Free Credits Finder" \
-  --tab "AI 免費額度" \
   --link 'Renoise $200 額度抽 2 人|追蹤 @renoiseai 並轉推（官方帳號，AI 影片）|https://x.com/renoiseai/status/2125263159816827176' \
   --link 'Spiral 免費額度|轉推並留言（官方帳號，沒寫額度多少）|https://x.com/spiraldotai/status/2125273409848533178'
 ```
