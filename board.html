@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex">
   <meta name="theme-color" content="#0b0a09">
   <title>每日連結總站 · 看板</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -93,9 +94,75 @@
       .slide.has-img .media { order: -1; max-height: 28vh; aspect-ratio: auto; height: 28vh; }
     }
     @media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
+
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      display: grid;
+      place-items: center;
+      padding: 1.25rem;
+      background: #efe6d8;
+      color: #1c1915;
+      color-scheme: light;
+      font-family: var(--sans);
+    }
+    .gate[hidden] { display: none; }
+    .gate form {
+      width: min(22rem, 100%);
+      background: #fbf7f1;
+      border: 1px solid #e3d5c2;
+      border-radius: 1.35rem;
+      padding: 1.15rem;
+    }
+    .gate h2 { margin: 0 0 0.85rem; font-family: var(--serif); font-size: 1.35rem; font-weight: 600; }
+    .gate label { display: block; margin-bottom: 0.4rem; font-size: 0.88rem; color: #6f655b; }
+    .gate input {
+      width: 100%;
+      min-height: 2.75rem;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid #e3d5c2;
+      border-radius: 0.7rem;
+      background: #efe6d8;
+      color: #1c1915;
+      font: inherit;
+    }
+    .gate button {
+      width: 100%;
+      min-height: 2.75rem;
+      margin-top: 0.7rem;
+      border: 0;
+      border-radius: 999px;
+      background: #1a1815;
+      color: #f8f2e8;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .gate button:disabled { opacity: 0.6; cursor: default; }
+    .gate input:focus-visible,
+    .gate button:focus-visible { outline: 2px solid #e2b15a; outline-offset: 2px; }
+    .gate-error { margin: 0.7rem 0 0; color: #8d2f2f; }
+    @media (prefers-color-scheme: dark) {
+      .gate { background: #100f0d; color: #f4efe6; color-scheme: dark; }
+      .gate form { background: #1b1a17; border-color: #34302a; }
+      .gate label { color: #b7ab9c; }
+      .gate input { background: #100f0d; color: #f4efe6; border-color: #34302a; }
+      .gate button { background: #070706; color: #f7f2ea; }
+      .gate-error { color: #f0b4b4; }
+    }
   </style>
 </head>
 <body>
+  <section id="gate" class="gate">
+    <form id="gate-form">
+      <h2>輸入密碼</h2>
+      <label for="gate-password">密碼</label>
+      <input id="gate-password" type="password" name="password" autocomplete="current-password" required>
+      <button type="submit">進入</button>
+      <p id="gate-error" class="gate-error" hidden>密碼不對</p>
+    </form>
+  </section>
   <header class="top">
     <div>
       <div class="clock" id="clock">--:--</div>
@@ -377,6 +444,7 @@
 
     // 可選的鍵盤操作（平常不需要碰）：←/→ 上下則、空白鍵暫停、F 全螢幕
     document.addEventListener("keydown", (e) => {
+      if (!document.getElementById("gate").hidden) return;
       if (e.key === "ArrowRight") show();
       else if (e.key === " ") { paused = !paused; if (!paused) startedAt = performance.now(); $("count").textContent = "第 " + shown + " 則" + (paused ? " · 已暫停" : ""); e.preventDefault(); }
       else if (e.key.toLowerCase() === "f") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
@@ -384,14 +452,89 @@
     let idleT; const wake = () => { document.body.classList.remove("idle"); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add("idle"), 4000); };
     document.addEventListener("mousemove", wake); wake();
 
-    (async function main() {
+    async function main() {
       clock(); setInterval(clock, 10000);
       renderSources();
       await refresh();
       show(); requestAnimationFrame(tickBar);
       keepAwake();
       setInterval(async () => { await refresh(); if (!current) show(); }, REFRESH_MIN * 60000);
-    })();
+    }
+
+    const GATE_SALT = "mv24FYlAQXqzWPt+kNbhdw==";
+    const GATE_ITERATIONS = 200000;
+    const GATE_HASH = "3xAExdNY8/ArB2V6OVaNLkCIqCfvftk81PIMvdj9sIM=";
+    const GATE_KEY = "link-hub-gate";
+
+    function gateBytes(b64) {
+      const bin = atob(b64);
+      const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+
+    function remembered() {
+      try { return localStorage.getItem(GATE_KEY) === GATE_HASH; }
+      catch (error) { return false; }
+    }
+
+    function remember() {
+      try { localStorage.setItem(GATE_KEY, GATE_HASH); }
+      catch (error) { /* 私密模式就每次再問 */ }
+    }
+
+    async function passwordMatches(password) {
+      const material = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(password),
+        "PBKDF2",
+        false,
+        ["deriveBits"]
+      );
+      const bits = await crypto.subtle.deriveBits({
+        name: "PBKDF2",
+        salt: gateBytes(GATE_SALT),
+        iterations: GATE_ITERATIONS,
+        hash: "SHA-256"
+      }, material, 256);
+      const got = new Uint8Array(bits);
+      const expected = gateBytes(GATE_HASH);
+      if (got.length !== expected.length) return false;
+      let diff = 0;
+      for (let i = 0; i < got.length; i += 1) diff |= got[i] ^ expected[i];
+      return diff === 0;
+    }
+
+    const gateForm = document.getElementById("gate-form");
+    gateForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const input = document.getElementById("gate-password");
+      const error = document.getElementById("gate-error");
+      const button = gateForm.querySelector("button");
+      error.hidden = true;
+      button.disabled = true;
+      try {
+        const ok = await passwordMatches(input.value);
+        if (!ok) {
+          error.hidden = false;
+          input.focus();
+          return;
+        }
+        input.value = "";
+        remember();
+        document.getElementById("gate").hidden = true;
+        await main();
+      } catch (gateError) {
+        error.hidden = false;
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    if (remembered()) {
+      document.getElementById("gate").hidden = true;
+      main();
+    }
   })();
   </script>
 </body>

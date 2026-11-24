@@ -2,7 +2,7 @@
 
 各個 bot 每天交來的連結，整理在同一頁。GitHub Pages 從 `main` 根目錄提供這個網站：<https://penguin-yeh.github.io/link-hub/>
 
-最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、週末。更早的日期收在摺疊的「歷史」。
+最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、週末。更早的日期收在摺疊的「歷史」。頁面上方另有一則固定的「消費儀表板」（記帳小幫手）；那個站有自己的密碼。
 
 ## 本機預覽
 
@@ -11,6 +11,22 @@ python3 -m http.server 8080
 ```
 
 打開 <http://127.0.0.1:8080/>。
+
+## 密碼
+
+首頁和看板會先問密碼，通過後把比對用的 hash 記在這台瀏覽器，下次（包含加到 iPhone 主畫面）就不用再輸入。密碼本身不會存下來。這只擋一下隨便點進來的人，`data.json` 仍然公開、可以直接抓。
+
+要換成新密碼，用下面這段產生 salt 與 hash，再同時換掉 `index.html` 和 `board.html` 裡的 `GATE_SALT`、`GATE_ITERATIONS`、`GATE_HASH`：
+
+```python
+import os, base64, hashlib
+password = "新密碼"
+salt = os.urandom(16)
+digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 200000, dklen=32)
+print("salt_b64 =", base64.b64encode(salt).decode())
+print("iterations = 200000")
+print("hash_b64 =", base64.b64encode(digest).decode())
+```
 
 ## 新增或更新一筆連結
 
@@ -23,7 +39,7 @@ python3 scripts/add_link.py \
   --href "https://example.com/news"
 ```
 
-`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`週末`。同一天的同一類別會取代舊項目；日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
+`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`週末`。同一天的同一類別會取代舊項目；日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
 
 **修改頁面或新增類別前，請先讀 [STYLE.md](STYLE.md)（「報社總編桌」風格與新增類別步驟）。**
 
