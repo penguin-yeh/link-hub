@@ -354,6 +354,16 @@
       --hairline: rgba(209, 90, 44, 0.2);
     }
 
+    /* 今日提醒 is not a data.json category. Pine, so it does not collide with 記帳's rose. */
+    .cat-remind {
+      --fill: #e4efe6;
+      --ink: #1b3a28;
+      --soft: #3f6a50;
+      --mark: #2f6b45;
+      --mark-ink: #f3fbf6;
+      --hairline: rgba(47, 107, 69, 0.18);
+    }
+
     @media (prefers-color-scheme: dark) {
       .cat-news {
         --fill: #1a2c44;
@@ -416,6 +426,15 @@
         --mark: #ffb089;
         --mark-ink: #3a1c12;
         --hairline: rgba(255, 176, 137, 0.3);
+      }
+
+      .cat-remind {
+        --fill: #1a2c22;
+        --ink: #dff3e6;
+        --soft: #a7d4b8;
+        --mark: #8ed9b0;
+        --mark-ink: #102016;
+        --hairline: rgba(142, 217, 176, 0.28);
       }
     }
 
@@ -508,6 +527,166 @@
     .pin:hover .title { text-decoration: underline; text-underline-offset: 0.18em; }
     .pin:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
 
+    #reminders:empty { display: none; }
+
+    .reminders {
+      margin: 0 0 1.15rem;
+    }
+
+    .reminders-headline {
+      margin: 0.2rem 0 0;
+      font-family: var(--serif);
+      font-size: 1.28rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
+    .reminders-sub {
+      margin: 0.35rem 0 0;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    .reminders-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-left: auto;
+    }
+
+    .reminders-tabs button {
+      margin: 0;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 0.16rem 0.7rem;
+      cursor: pointer;
+    }
+
+    .reminders-tabs button[aria-selected="true"] {
+      background: var(--mark);
+      color: var(--mark-ink);
+      border-color: var(--mark);
+    }
+
+    .reminders-tabs button:disabled {
+      opacity: 0.38;
+      cursor: default;
+    }
+
+    .reminders-tabs button:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .reminders-updated {
+      margin: 0.35rem 0 0;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+    }
+
+    .reminders-section {
+      margin: 0.7rem 0 0;
+      padding: 0.55rem 0 0;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .reminders-section h4 {
+      margin: 0 0 0.3rem;
+      color: var(--soft);
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.12em;
+    }
+
+    .reminders-rows {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .reminders-rows.numbered { counter-reset: remind; }
+
+    .reminders-rows li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.32rem 0;
+      overflow-wrap: anywhere;
+    }
+
+    .reminders-rows.numbered li { counter-increment: remind; }
+
+    .reminders-dot {
+      flex: none;
+      width: 0.5rem;
+      height: 0.5rem;
+      margin-top: 0.55rem;
+      border-radius: 999px;
+      background: var(--mark);
+    }
+
+    .reminders-rows.numbered li::before {
+      content: counter(remind);
+      flex: none;
+      width: 1.15rem;
+      color: var(--soft);
+      font-size: 0.78rem;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.6;
+      text-align: right;
+    }
+
+    .reminders-rows.numbered .reminders-dot { display: none; }
+
+    .reminders-tag {
+      flex: none;
+      margin-top: 0.12rem;
+      padding: 0.08rem 0.45rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      color: var(--soft);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .reminders-rows .is-muted { color: var(--soft); }
+
+    .reminders-notes {
+      margin: 0.75rem 0 0.2rem;
+      padding: 0.55rem 0 0;
+      border-top: 1px solid var(--hairline);
+      color: var(--soft);
+      font-size: 0.86rem;
+    }
+
+    .reminders-notes p { margin: 0 0 0.28rem; }
+
+    .reminders-pending {
+      margin: 0.25rem 0 0.15rem;
+      color: var(--soft);
+    }
+
+    .reminders a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 0.18em;
+    }
+
+    .reminders a:focus-visible {
+      outline: 2px solid var(--mark);
+      outline-offset: 2px;
+      border-radius: 0.4rem;
+    }
+
     @media (max-width: 640px) {
       .masthead { padding: 2.1rem 0 1.6rem; }
 
@@ -562,6 +741,11 @@
       <circle cx="12" cy="12" r="3.15" fill="none" stroke="currentColor" stroke-width="1.7"/>
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 3.2v2.15M12 18.65V20.8M3.2 12h2.15M18.65 12H20.8M6.05 6.05l1.5 1.5M16.45 16.45l1.5 1.5M17.95 6.05l-1.5 1.5M7.55 16.45l-1.5 1.5"/>
     </symbol>
+    <symbol id="icon-remind" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M9 3.7h6v2.2H9z"/>
+      <rect x="6.3" y="5.1" width="11.4" height="15.2" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="m8.7 11.1 1.35 1.35 2.25-2.5M8.7 16.2l1.35 1.35 2.25-2.5M14.4 11.5h2.3M14.4 16.5h2.3"/>
+    </symbol>
   </svg>
 
   <header class="masthead">
@@ -583,6 +767,7 @@
         </form>
       </section>
       <div id="desk" hidden>
+        <div id="reminders"></div>
         <a class="pin cat-expense" href="https://penguin-yeh.github.io/expense-dashboard/" rel="noopener noreferrer">
           <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><use href="#icon-expense"></use></svg></span>
           <span>
@@ -889,6 +1074,271 @@
       app.textContent = text;
     }
 
+    function viewDate() {
+      const override = new URLSearchParams(location.search).get("date");
+      if (override && isRealDate(override)) return override;
+      return taipeiToday();
+    }
+
+    function reminderDayParts(iso) {
+      const parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+      if (!parts) return { dow: "今", md: "", year: "" };
+      const weekday = utcWeekday(iso);
+      const names = "日一二三四五六";
+      return {
+        dow: weekday === null ? "今" : names[weekday],
+        md: parts[2] + "/" + parts[3],
+        year: parts[1]
+      };
+    }
+
+    function formatUpdatedAt(value) {
+      if (!value) return "";
+      const dt = new Date(value);
+      if (Number.isNaN(dt.getTime())) return "";
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Taipei",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(dt);
+      const get = (type) => (parts.find((part) => part.type === type) || {}).value;
+      return get("month") + "/" + get("day") + " " + get("hour") + ":" + get("minute");
+    }
+
+    function appendLinkedText(node, text) {
+      const value = String(text || "");
+      const pattern = /https?:\/\/[^\s)\]>，。、]+/gi;
+      let last = 0;
+      let match;
+      while ((match = pattern.exec(value))) {
+        if (match.index > last) node.appendChild(document.createTextNode(value.slice(last, match.index)));
+        let href = match[0];
+        let trailing = "";
+        while (/[.,;:!?，。、）】」』]$/.test(href)) {
+          trailing = href.slice(-1) + trailing;
+          href = href.slice(0, -1);
+        }
+        const safe = safeHref(href);
+        if (safe) {
+          const link = document.createElement("a");
+          link.href = safe;
+          link.rel = "noopener noreferrer";
+          link.textContent = href;
+          node.appendChild(link);
+        } else {
+          node.appendChild(document.createTextNode(match[0]));
+          trailing = "";
+        }
+        if (trailing) node.appendChild(document.createTextNode(trailing));
+        last = match.index + match[0].length;
+      }
+      if (last < value.length) node.appendChild(document.createTextNode(value.slice(last)));
+    }
+
+    function renderReminderRows(section) {
+      const numbered = section.style === "numbered";
+      const list = document.createElement(numbered ? "ol" : "ul");
+      list.className = "reminders-rows" + (numbered ? " numbered" : "");
+      (section.rows || []).forEach((row) => {
+        if (!row || !row.text) return;
+        const item = document.createElement("li");
+        if (row.muted) item.className = "is-muted";
+        const dot = document.createElement("span");
+        dot.className = "reminders-dot";
+        if (row.color) dot.style.background = row.color;
+        item.appendChild(dot);
+        if (row.tag) {
+          const tag = document.createElement("span");
+          tag.className = "reminders-tag";
+          tag.textContent = row.tag;
+          item.appendChild(tag);
+        }
+        const body = document.createElement("span");
+        appendLinkedText(body, row.text);
+        item.appendChild(body);
+        list.appendChild(item);
+      });
+      return list.childElementCount ? list : null;
+    }
+
+    function renderReminderBlock(block) {
+      const wrap = document.createElement("div");
+      if (!block) {
+        const pending = document.createElement("p");
+        pending.className = "reminders-pending";
+        pending.textContent = "這一時段還沒有提醒。";
+        wrap.appendChild(pending);
+        return wrap;
+      }
+      if (block.headline) {
+        const headline = document.createElement("p");
+        headline.className = "reminders-headline";
+        headline.textContent = block.headline;
+        wrap.appendChild(headline);
+      }
+      if (block.sub) {
+        const sub = document.createElement("p");
+        sub.className = "reminders-sub";
+        sub.textContent = block.sub;
+        wrap.appendChild(sub);
+      }
+      (block.sections || []).forEach((section) => {
+        const rows = renderReminderRows(section);
+        if (!rows) return;
+        const group = document.createElement("section");
+        group.className = "reminders-section";
+        if (section.label) {
+          const label = document.createElement("h4");
+          label.textContent = section.label;
+          group.appendChild(label);
+        }
+        group.appendChild(rows);
+        wrap.appendChild(group);
+      });
+      if (Array.isArray(block.notes) && block.notes.length) {
+        const notes = document.createElement("div");
+        notes.className = "reminders-notes";
+        block.notes.forEach((note) => {
+          if (!note) return;
+          const line = document.createElement("p");
+          appendLinkedText(line, note);
+          notes.appendChild(line);
+        });
+        if (notes.childElementCount) wrap.appendChild(notes);
+      }
+      return wrap;
+    }
+
+    function renderRemindersPending(root, dateLabel) {
+      const section = document.createElement("section");
+      section.className = "day reminders cat-remind";
+      const mark = document.createElement("div");
+      mark.className = "day-mark";
+      const dow = document.createElement("span");
+      dow.className = "dow";
+      dow.textContent = "今";
+      const md = document.createElement("span");
+      md.className = "md";
+      md.textContent = dateLabel || "今日提醒";
+      mark.append(dow, md);
+      const blocks = document.createElement("div");
+      blocks.className = "blocks";
+      const block = document.createElement("section");
+      block.className = "block cat-remind";
+      const head = document.createElement("div");
+      head.className = "block-head";
+      const title = document.createElement("h3");
+      title.textContent = "今日提醒";
+      head.append(badge("icon-remind"), title);
+      const pending = document.createElement("p");
+      pending.className = "reminders-pending";
+      pending.textContent = "今天的提醒還沒更新";
+      block.append(head, pending);
+      blocks.appendChild(block);
+      section.append(mark, blocks);
+      root.replaceChildren(section);
+    }
+
+    function renderReminders(root, data) {
+      const today = viewDate();
+      if (!data || data.date !== today || (!data.morning && !data.evening)) {
+        const parts = reminderDayParts(today);
+        renderRemindersPending(root, parts.md ? parts.md : today);
+        return;
+      }
+
+      const defaultSlot = data.evening ? "evening" : "morning";
+      const section = document.createElement("section");
+      section.className = "day reminders cat-remind";
+
+      const parts = reminderDayParts(data.date);
+      const mark = document.createElement("div");
+      mark.className = "day-mark";
+      const dow = document.createElement("span");
+      dow.className = "dow";
+      dow.textContent = parts.dow;
+      const md = document.createElement("span");
+      md.className = "md";
+      md.textContent = parts.md;
+      const year = document.createElement("span");
+      year.className = "year";
+      year.textContent = parts.year;
+      mark.append(dow, md, year);
+
+      const blocks = document.createElement("div");
+      blocks.className = "blocks";
+      const block = document.createElement("section");
+      block.className = "block cat-remind";
+
+      const head = document.createElement("div");
+      head.className = "block-head";
+      const title = document.createElement("h3");
+      title.textContent = "今日提醒";
+      const tabs = document.createElement("div");
+      tabs.className = "reminders-tabs";
+      tabs.setAttribute("role", "tablist");
+      tabs.setAttribute("aria-label", "早上或傍晚的提醒");
+
+      const pane = document.createElement("div");
+      pane.className = "reminders-pane";
+
+      function show(slot) {
+        tabs.querySelectorAll("button").forEach((button) => {
+          button.setAttribute("aria-selected", button.dataset.slot === slot ? "true" : "false");
+        });
+        pane.replaceChildren(renderReminderBlock(data[slot]));
+      }
+
+      [["morning", "早上"], ["evening", "傍晚"]].forEach(([slot, label]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.slot = slot;
+        button.id = "remind-tab-" + slot;
+        button.setAttribute("role", "tab");
+        button.setAttribute("aria-selected", "false");
+        button.textContent = label;
+        if (!data[slot]) {
+          button.disabled = true;
+        } else {
+          button.addEventListener("click", () => show(slot));
+        }
+        tabs.appendChild(button);
+      });
+
+      head.append(badge("icon-remind"), title, tabs);
+      block.append(head, pane);
+      if (data.updated_at) {
+        const updated = document.createElement("p");
+        updated.className = "reminders-updated";
+        const stamp = formatUpdatedAt(data.updated_at);
+        updated.textContent = stamp ? "更新於 " + stamp : "";
+        if (updated.textContent) block.appendChild(updated);
+      }
+      blocks.appendChild(block);
+      section.append(mark, blocks);
+      root.replaceChildren(section);
+      show(defaultSlot);
+    }
+
+    async function loadReminders() {
+      const root = document.getElementById("reminders");
+      if (!root) return;
+      try {
+        const response = await fetch("reminders.json?v=" + Date.now(), { cache: "no-store" });
+        if (!response.ok) {
+          renderRemindersPending(root);
+          return;
+        }
+        const data = await response.json();
+        renderReminders(root, data);
+      } catch (error) {
+        renderRemindersPending(root);
+      }
+    }
+
     async function load() {
       const response = await fetch("data.json?v=" + Date.now(), { cache: "no-store" });
       if (!response.ok) throw new Error("無法讀取 data.json");
@@ -964,6 +1414,7 @@
     function openDesk() {
       document.getElementById("gate").hidden = true;
       document.getElementById("desk").hidden = false;
+      loadReminders();
       load().catch(() => showMessage("連結讀取失敗，請稍後再試。"));
     }
 

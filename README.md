@@ -2,7 +2,9 @@
 
 各個 bot 每天交來的連結，整理在同一頁。GitHub Pages 從 `main` 根目錄提供這個網站：<https://penguin-yeh.github.io/link-hub/>
 
-最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、週末。更早的日期收在摺疊的「歷史」。頁面上方另有一則固定的「消費儀表板」（記帳小幫手）；那個站有自己的密碼。
+最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、週末。更早的日期收在摺疊的「歷史」。
+
+解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天，早上／傍晚各一筆）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是固定的「消費儀表板」（記帳小幫手）連結，再來才是類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒。
 
 ## 本機預覽
 
@@ -14,7 +16,7 @@ python3 -m http.server 8080
 
 ## 密碼
 
-首頁和看板會先問密碼，通過後把比對用的 hash 記在這台瀏覽器，下次（包含加到 iPhone 主畫面）就不用再輸入。密碼本身不會存下來。這只擋一下隨便點進來的人，`data.json` 仍然公開、可以直接抓。
+首頁和看板會先問密碼，通過後把比對用的 hash 記在這台瀏覽器，下次（包含加到 iPhone 主畫面）就不用再輸入。密碼本身不會存下來。這只擋一下隨便點進來的人，`data.json` 和 `reminders.json` 仍然公開、可以直接抓，所以今日提醒在發布前會先淨化敏感內容。
 
 要換成新密碼，用下面這段產生 salt 與 hash，再同時換掉 `index.html` 和 `board.html` 裡的 `GATE_SALT`、`GATE_ITERATIONS`、`GATE_HASH`：
 
@@ -43,9 +45,22 @@ python3 scripts/add_link.py \
 
 **修改頁面或新增類別前，請先讀 [STYLE.md](STYLE.md)（「報社總編桌」風格與新增類別步驟）。**
 
+## 今日提醒（Apple 小秘書）
+
+置頂卡從同目錄的 `reminders.json` 載入，不經過 `data.json`。檔案只保留一個日期；若日期不是今天（Asia/Taipei），頁面會顯示「今天的提醒還沒更新」。本機預覽可用 `?date=YYYY-MM-DD` 指定要對照的日期。
+
+由 Apple 小秘書在產出每日卡片後執行：
+
+```bash
+python3 /workspace/daily-card/publish_linkhub.py /workspace/daily-card/YYYY-MM-DD-today.json morning
+python3 /workspace/daily-card/publish_linkhub.py /workspace/daily-card/YYYY-MM-DD-evening.json evening
+```
+
+腳本會先淨化敏感內容，覆寫 `reminders.json`，再只 commit / push 這個檔。
+
 ## 常駐看板（board.html）
 
-<https://penguin-yeh.github.io/link-hub/board.html> 是給外接螢幕常駐用的看板：不用互動，每 20 秒自動換一則，內容直接從各網站的最新頁面抓（新聞、X、洞察、學習、週末），來源依權重隨機抽（新聞、X 較常出現），相鄰兩則一定不同來源；每個來源內整輪洗牌後才會重複。
+<https://penguin-yeh.github.io/link-hub/board.html> 是給外接螢幕常駐用的看板：不用互動，每 20 秒自動換一則，內容直接從各網站的最新頁面抓（新聞、X、洞察、學習、週末），來源依權重隨機抽（新聞、X 較常出現），相鄰兩則一定不同來源；每個來源內整輪洗牌後才會重複。今日提醒是私人行程，看板不要加入 `reminders.json` 這個來源。
 
 - 參數：`?t=30` 改每則停留秒數；`?src=news,x` 只看部分來源（`news`、`x`、`insight`、`learn`、`weekend`）。
 - 每 20 分鐘自動重抓（不用改 board.html，各網站更新後看板自己跟上）；`?dim=1` 可開啟 23:00–07:00 自動調暗（預設關閉）；支援的瀏覽器會阻止螢幕休眠。
