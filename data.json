@@ -1,6 +1,44 @@
 {
   "days": [
     {
+      "date": "2026-11-25",
+      "label": "2026-11-25（三）",
+      "items": [
+        {
+          "category": "X",
+          "tab": "AI 免費額度",
+          "bot": "X Free Credits Finder",
+          "links": [
+            {
+              "title": "Renoise $200 額度抽 2 人",
+              "href": "https://x.com/renoiseai/status/2125263159816827176",
+              "note": "追蹤 @renoiseai 並轉推（官方帳號，AI 影片）"
+            },
+            {
+              "title": "Spiral 免費額度",
+              "href": "https://x.com/spiraldotai/status/2125273409848533178",
+              "note": "轉推並留言（官方帳號，沒寫額度多少）"
+            },
+            {
+              "title": "ElevenLabs Huedini 11k 額度",
+              "href": "https://x.com/alecwilcock/status/2125245858136383799",
+              "note": "用 Huedini 做一張作品、引用轉推，再留言「hue」，11/25 晚上 11 點左右截止（ElevenLabs 社群小編發的）"
+            },
+            {
+              "title": "AIHubMix $5 API 額度抽 5 人",
+              "href": "https://x.com/AiHubMix/status/2124753750174908887",
+              "note": "追蹤並轉推（小型 API 轉售平台）"
+            },
+            {
+              "title": "Aragon.ai 1,000 額度限前 10 名",
+              "href": "https://x.com/aragon_ai/status/2125176226692386999",
+              "note": "轉推並回覆，可能已經額滿"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "date": "2026-11-24",
       "label": "2026-11-24（二）",
       "items": [

@@ -41,6 +41,18 @@ python3 scripts/add_link.py \
 
 `--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`週末`。同一天的同一類別會取代舊項目；日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
 
+X 底下可以有分頁。`--tab` 只用於類別 `X`，同一天的該分頁會整份換掉，不會動到當天的 X 早報或晚間整理；反過來更新早報或晚間也不會清掉分頁。清單用可重複的 `--link '標題|說明|網址'`，或 `--links-json` 指向一個 `[{title, note, href}, ...]` 檔案。
+
+```bash
+python3 scripts/add_link.py \
+  --date 2026-11-25 \
+  --category X \
+  --bot "X Free Credits Finder" \
+  --tab "AI 免費額度" \
+  --link 'Renoise $200 額度抽 2 人|追蹤 @renoiseai 並轉推（官方帳號，AI 影片）|https://x.com/renoiseai/status/2125263159816827176' \
+  --link 'Spiral 免費額度|轉推並留言（官方帳號，沒寫額度多少）|https://x.com/spiraldotai/status/2125273409848533178'
+```
+
 **修改頁面或新增類別前，請先讀 [STYLE.md](STYLE.md)（「報社總編桌」風格與新增類別步驟）。**
 
 ## 常駐看板（board.html）
