@@ -4,7 +4,7 @@
 
 最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、省錢、週末。更早的日期收在摺疊的「歷史」。
 
-解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天，早上／傍晚各一筆）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是固定的「消費儀表板」（記帳小幫手）連結，再來才是類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒。
+解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是固定的「消費儀表板」（記帳小幫手）連結，再來才是類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒。
 
 ## 本機預覽
 
@@ -74,14 +74,14 @@ python3 scripts/add_link.py \
 
 置頂卡從同目錄的 `reminders.json` 載入，不經過 `data.json`。檔案只保留一個日期；若日期不是今天（Asia/Taipei），頁面會顯示一行「今天的提醒還沒更新」。有資料時預設收合，點擊展開；本機預覽可用 `?date=YYYY-MM-DD` 指定要對照的日期。
 
-由 Apple 小秘書在產出每日卡片後執行：
+由 Apple 小秘書在產出每日卡片後執行（`morning`／`evening` 只是標籤；每次都會整份覆寫成最新那一張卡）：
 
 ```bash
 python3 /workspace/daily-card/publish_linkhub.py /workspace/daily-card/YYYY-MM-DD-today.json morning
 python3 /workspace/daily-card/publish_linkhub.py /workspace/daily-card/YYYY-MM-DD-evening.json evening
 ```
 
-腳本會先淨化敏感內容，覆寫 `reminders.json`，再只 commit / push 這個檔。
+腳本會先淨化敏感內容，用單一區塊覆寫 `reminders.json`，再只 commit / push 這個檔。
 
 ## 常駐看板（board.html）
 

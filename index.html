@@ -567,43 +567,6 @@
       font-size: 0.9rem;
     }
 
-    .reminders-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      margin-left: auto;
-    }
-
-    .reminders-tabs button {
-      margin: 0;
-      border: 1px solid var(--hairline);
-      border-radius: 999px;
-      background: transparent;
-      color: var(--ink);
-      font: inherit;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      padding: 0.16rem 0.7rem;
-      cursor: pointer;
-    }
-
-    .reminders-tabs button[aria-selected="true"] {
-      background: var(--mark);
-      color: var(--mark-ink);
-      border-color: var(--mark);
-    }
-
-    .reminders-tabs button:disabled {
-      opacity: 0.38;
-      cursor: default;
-    }
-
-    .reminders-tabs button:focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 3px;
-    }
-
     .reminders-updated {
       margin: 0.35rem 0 0;
       color: var(--soft);
@@ -835,10 +798,6 @@
     .reminders.is-expanded .reminders-details {
       background: transparent;
       padding: 0.15rem 0.95rem 0.55rem;
-    }
-
-    .reminders.is-expanded .block-head {
-      margin-bottom: 0.15rem;
     }
 
     .reminders a {
@@ -1469,10 +1428,18 @@
       } catch (error) { /* 私密模式就不記住 */ }
     }
 
-    function reminderPeek(block, slot) {
-      const names = slot === "evening"
-        ? ["今天還沒完成", "今天到期", "今天先做"]
-        : ["今天先做", "今天到期", "今天還沒完成"];
+    function reminderCard(data) {
+      if (!data || typeof data !== "object") return null;
+      if (data.card && (data.card.headline || data.card.sections)) {
+        return { slot: data.slot || data.card.theme || "morning", block: data.card };
+      }
+      if (data.evening) return { slot: "evening", block: data.evening };
+      if (data.morning) return { slot: "morning", block: data.morning };
+      return null;
+    }
+
+    function reminderPeek(block) {
+      const names = ["今天還沒完成", "今天先做", "今天到期"];
       const sections = (block && block.sections) || [];
       let rows = [];
       for (let i = 0; i < names.length; i += 1) {
@@ -1485,14 +1452,13 @@
       }
       return {
         items: rows.slice(0, 3),
-        extra: Math.max(0, rows.length - 3),
-        total: rows.length
+        extra: Math.max(0, rows.length - 3)
       };
     }
 
-    function renderReminderPeek(block, slot, host) {
+    function renderReminderPeek(block, host) {
       host.replaceChildren();
-      const peek = reminderPeek(block, slot);
+      const peek = reminderPeek(block);
       if (!peek.items.length) return;
       const list = document.createElement("ul");
       list.className = "reminders-summary";
@@ -1537,13 +1503,14 @@
 
     function renderReminders(root, data) {
       const today = viewDate();
-      if (!data || data.date !== today || (!data.morning && !data.evening)) {
+      const picked = reminderCard(data);
+      if (!data || data.date !== today || !picked) {
         const parts = reminderDayParts(today);
         renderRemindersPending(root, parts.md ? parts.md : today);
         return;
       }
 
-      const defaultSlot = data.evening ? "evening" : "morning";
+      const block = picked.block;
       const section = document.createElement("section");
       section.className = "day reminders cat-remind";
 
@@ -1576,9 +1543,16 @@
       kicker.textContent = "今日提醒";
       const headline = document.createElement("p");
       headline.className = "reminders-headline";
+      headline.textContent = block.headline || "今日提醒";
       const sub = document.createElement("p");
       sub.className = "reminders-sub";
+      if (block.sub) {
+        sub.textContent = block.sub;
+      } else {
+        sub.hidden = true;
+      }
       const peekHost = document.createElement("div");
+      renderReminderPeek(block, peekHost);
       toggleBody.append(kicker, headline, sub, peekHost);
 
       const affordance = document.createElement("span");
@@ -1589,45 +1563,13 @@
       const details = document.createElement("section");
       details.className = "block cat-remind reminders-details";
       details.id = "reminders-details";
-
-      const head = document.createElement("div");
-      head.className = "block-head";
-      const tabs = document.createElement("div");
-      tabs.className = "reminders-tabs";
-      tabs.setAttribute("role", "tablist");
-      tabs.setAttribute("aria-label", "早上或傍晚的提醒");
-      head.appendChild(tabs);
-
-      const pane = document.createElement("div");
-      pane.className = "reminders-pane";
-      details.append(head, pane);
+      details.appendChild(renderReminderBlock(block));
       if (data.updated_at) {
         const updated = document.createElement("p");
         updated.className = "reminders-updated";
         const stamp = formatUpdatedAt(data.updated_at);
         updated.textContent = stamp ? "更新於 " + stamp : "";
         if (updated.textContent) details.appendChild(updated);
-      }
-
-      function fillToggle(slot) {
-        const block = data[slot] || {};
-        headline.textContent = block.headline || "今日提醒";
-        if (block.sub) {
-          sub.textContent = block.sub;
-          sub.hidden = false;
-        } else {
-          sub.textContent = "";
-          sub.hidden = true;
-        }
-        renderReminderPeek(block, slot, peekHost);
-      }
-
-      function show(slot) {
-        tabs.querySelectorAll("button").forEach((button) => {
-          button.setAttribute("aria-selected", button.dataset.slot === slot ? "true" : "false");
-        });
-        fillToggle(slot);
-        pane.replaceChildren(renderReminderBlock(data[slot]));
       }
 
       function setOpen(open) {
@@ -1641,25 +1583,6 @@
         writeReminderOpen(data.date, open);
       }
 
-      [["morning", "早上"], ["evening", "傍晚"]].forEach(([slot, label]) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.dataset.slot = slot;
-        button.id = "remind-tab-" + slot;
-        button.setAttribute("role", "tab");
-        button.setAttribute("aria-selected", "false");
-        button.textContent = label;
-        if (!data[slot]) {
-          button.disabled = true;
-        } else {
-          button.addEventListener("click", (event) => {
-            event.stopPropagation();
-            show(slot);
-          });
-        }
-        tabs.appendChild(button);
-      });
-
       toggle.addEventListener("click", () => {
         setOpen(!section.classList.contains("is-expanded"));
       });
@@ -1667,7 +1590,6 @@
       blocks.append(toggle, details);
       section.append(mark, blocks);
       root.replaceChildren(section);
-      show(defaultSlot);
       setOpen(readReminderOpen(data.date));
     }
 
