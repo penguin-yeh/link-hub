@@ -2,9 +2,9 @@
 
 各個 bot 每天交來的連結，整理在同一頁。GitHub Pages 從 `main` 根目錄提供這個網站：<https://penguin-yeh.github.io/link-hub/>
 
-最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、週末。更早的日期收在摺疊的「歷史」。
+最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、省錢、週末。更早的日期收在摺疊的「歷史」。某一類當天沒有連結，就不顯示那張空卡片。
 
-解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是一則固定連結：「省錢情報」（X Free Credits Finder）。省錢不是每日類別，卡片和類別 chips 裡的「省錢」都連到 <https://penguin-yeh.github.io/savings/>，內容由那個站自己維護。再來是類別 chips。「記帳」chip 固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，不是當天最新的記帳連結；每一天的記帳卡片仍顯示 `add_link.py` 寫入的那一天連結，沒有記帳項目的日子不顯示空卡片。常駐看板 `board.html` **不會**輪播或顯示今日提醒，也不輪播學習。
+解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是類別 chips。「記帳」chip 固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，「省錢」chip 固定連到 <https://penguin-yeh.github.io/savings/>，都不是當天最新的那一筆。每一天的記帳、省錢卡片仍顯示 `add_link.py` 寫入的那一天連結。常駐看板 `board.html` **不會**輪播或顯示今日提醒，也不輪播學習。
 
 ## 本機預覽
 
@@ -41,7 +41,18 @@ python3 scripts/add_link.py \
   --href "https://example.com/news"
 ```
 
-`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`週末`。同一天的同一類別、同一 `--slot` 會取代舊項目；未指定 `--slot` 時，slot 等於類別名稱，因此行為與以前相同（例如晚間的「X 晚間整理」會蓋掉當天的「X 早報」）。日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
+`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`省錢`、`週末`。省錢是一般單筆連結，例如：
+
+```bash
+python3 scripts/add_link.py \
+  --date 2026-11-25 \
+  --category 省錢 \
+  --bot "X Free Credits Finder" \
+  --title "省錢情報" \
+  --href "https://penguin-yeh.github.io/savings/"
+```
+
+同一天的同一類別、同一 `--slot` 會取代舊項目；未指定 `--slot` 時，slot 等於類別名稱，因此行為與以前相同（例如晚間的「X 晚間整理」會蓋掉當天的「X 早報」）。日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
 
 同一類別若要並存兩筆（例如 X 分類同時放早報／晚間整理和 AI 爆紅精選），加上不同的 `--slot`。自訂 slot 會寫進 `data.json` 的 `slot` 欄位；預設 slot 不會多寫這個欄位。前端會列出同一類別的多筆連結。
 

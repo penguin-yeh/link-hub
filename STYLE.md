@@ -52,12 +52,11 @@
 | X | `cat-x` | 黑白 `#f6f6f6` 反相 |
 | 學習 | `cat-learn` | 靛紫 `#5240a8` |
 | 記帳 | `cat-expense` | 玫瑰 `#9b2f55` |
+| 省錢 | `cat-save` | 青 `#0e7490` |
 | 週末 | `cat-weekend` | 橘 `#d15a2c` |
 | 今日提醒（非連結類別，Apple 小秘書） | `cat-remind` | 松綠 `#2f6b45` |
 
-「省錢情報」不是每日類別，而是固定連結，用 `cat-save`（青 `#0e7490`）指向 <https://penguin-yeh.github.io/savings/>。不要把它加進 `add_link.py` 的 `CATEGORIES`。
-
-「記帳」仍是每日類別。類別 chips 裡的「記帳」固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，不加 `target`。當天卡片只在 `data.json` 有記帳項目時出現，並連到該日連結；沒有項目就不畫空卡片。頁面上方不再釘「消費儀表板」卡。
+「記帳」與「省錢」都是每日類別，各寫一筆一般連結。類別 chips 裡的「記帳」固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，「省錢」固定連到 <https://penguin-yeh.github.io/savings/>，都不加 `target`。當天卡片只在 `data.json` 有該類項目時出現，並連到該日連結；沒有項目就不畫空卡片。頁面上方不釘消費儀表板或省錢情報卡。
 
 新類別必須選一個**與以上都拉得開的色相**，並維持「淺色底深色字、深色底淺色字」的對比（內文對比至少 4.5:1）。
 
@@ -90,4 +89,4 @@
 
 ## 7. 置頂的今日提醒
 
-解鎖後，`index.html` 在「省錢情報」與類別 chips 上方釘一張「今日提醒」卡（沿用 `.day` / `.block` 與 `cat-remind` 松綠色票，勿與 `cat-expense` 的玫瑰衝突），從 `reminders.json` 讀當天最新一筆內容。它不是 `scripts/add_link.py` 的類別，不要把它寫進 `CATEGORIES`。預設收合為一列摘要（標題、副標、兩到三件先做／未完成的事），點擊展開全文；同一天的展開狀態可記在 localStorage，換日後回到收合。不要再加早上／傍晚分頁。日期不是今天時維持一行「今天的提醒還沒更新」，不再展開。
+解鎖後，`index.html` 在類別 chips 上方釘一張「今日提醒」卡（沿用 `.day` / `.block` 與 `cat-remind` 松綠色票，勿與 `cat-expense` 的玫瑰或 `cat-save` 的青色衝突），從 `reminders.json` 讀當天最新一筆內容。它不是 `scripts/add_link.py` 的類別，不要把它寫進 `CATEGORIES`。預設收合為一列摘要（標題、副標、兩到三件先做／未完成的事），點擊展開全文；同一天的展開狀態可記在 localStorage，換日後回到收合。不要再加早上／傍晚分頁。日期不是今天時維持一行「今天的提醒還沒更新」，不再展開。
