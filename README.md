@@ -2,9 +2,9 @@
 
 各個 bot 每天交來的連結，整理在同一頁。GitHub Pages 從 `main` 根目錄提供這個網站：<https://penguin-yeh.github.io/link-hub/>
 
-最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、省錢、週末。更早的日期收在摺疊的「歷史」。
+最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、週末。更早的日期收在摺疊的「歷史」。
 
-解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是固定的「消費儀表板」（記帳小幫手）連結，再來才是類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒。
+解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是兩則固定連結：「消費儀表板」（記帳小幫手）和「省錢情報」（X Free Credits Finder，<https://penguin-yeh.github.io/savings/>，那個站自己維護內容）。再來才是類別 chips。常駐看板 `board.html` **不會**輪播或顯示今日提醒，也不輪播學習。
 
 ## 本機預覽
 
@@ -18,7 +18,7 @@ python3 -m http.server 8080
 
 首頁和看板會先問密碼，通過後把比對用的 hash 記在這台瀏覽器，下次（包含加到 iPhone 主畫面）就不用再輸入。密碼本身不會存下來。這只擋一下隨便點進來的人，`data.json` 和 `reminders.json` 仍然公開、可以直接抓，所以今日提醒在發布前會先淨化敏感內容。
 
-要換成新密碼，用下面這段產生 salt 與 hash，再同時換掉 `index.html`、`board.html` 和 `scripts/add_link.py` 裡的 `GATE_SALT`、`GATE_ITERATIONS`、`GATE_HASH`。已產生的 `savings/*.html` 要再跑一次對應日期的省錢指令才會換上新 hash。
+要換成新密碼，用下面這段產生 salt 與 hash，再同時換掉 `index.html` 和 `board.html` 裡的 `GATE_SALT`、`GATE_ITERATIONS`、`GATE_HASH`：
 
 ```python
 import os, base64, hashlib
@@ -41,7 +41,7 @@ python3 scripts/add_link.py \
   --href "https://example.com/news"
 ```
 
-`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`省錢`、`週末`。同一天的同一類別、同一 `--slot` 會取代舊項目；未指定 `--slot` 時，slot 等於類別名稱，因此行為與以前相同（例如晚間的「X 晚間整理」會蓋掉當天的「X 早報」）。日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
+`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`週末`。同一天的同一類別、同一 `--slot` 會取代舊項目；未指定 `--slot` 時，slot 等於類別名稱，因此行為與以前相同（例如晚間的「X 晚間整理」會蓋掉當天的「X 早報」）。日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
 
 同一類別若要並存兩筆（例如 X 分類同時放早報／晚間整理和 AI 爆紅精選），加上不同的 `--slot`。自訂 slot 會寫進 `data.json` 的 `slot` 欄位；預設 slot 不會多寫這個欄位。前端會列出同一類別的多筆連結。
 
@@ -56,26 +56,6 @@ python3 scripts/add_link.py \
 ```
 
 這不會蓋掉同一天 `--category X` 且未指定 `--slot` 的「X 早報」或「X 晚間整理」。同一天重複跑 `--slot ai-picks` 只會更新這一筆。
-
-「省錢」一天在總站仍是一則。標題預設為 `省錢情報（N 則）`，也可用 `--title` 自訂。網址是 `https://penguin-yeh.github.io/link-hub/savings/YYYY-MM-DD.html`。腳本會覆寫該頁：依輸入順序分子分類，每則是標題連結加說明；說明裡的 `[文字](網址)` 會變成連結。同一天再跑會換掉該頁和這一則，不會動到其他類別。
-
-清單用 `--links-json`，內容是 `[{"section","title","note","href"}, ...]`，或可重複的 `--link '子分類|標題|說明|網址'`。
-
-```bash
-python3 scripts/add_link.py \
-  --date 2026-11-25 \
-  --category 省錢 \
-  --bot "X Free Credits Finder" \
-  --links-json savings-2026-11-25.json
-```
-
-`savings-2026-11-25.json` 例如：
-
-```json
-[
-  {"section": "電商檔期", "title": "蝦皮 11/25 商城狂購節", "note": "全站滿 100 折 50，今天限定", "href": "https://shopee.tw/m/shopee-mall-sale"}
-]
-```
 
 **修改頁面或新增類別前，請先讀 [STYLE.md](STYLE.md)（「報社總編桌」風格與新增類別步驟）。**
 

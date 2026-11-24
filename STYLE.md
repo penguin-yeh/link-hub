@@ -52,9 +52,10 @@
 | X | `cat-x` | 黑白 `#f6f6f6` 反相 |
 | 學習 | `cat-learn` | 靛紫 `#5240a8` |
 | 記帳 | `cat-expense` | 玫瑰 `#9b2f55` |
-| 省錢 | `cat-save` | 青 `#0e7490` |
 | 週末 | `cat-weekend` | 橘 `#d15a2c` |
 | 今日提醒（非連結類別，Apple 小秘書） | `cat-remind` | 松綠 `#2f6b45` |
+
+「省錢情報」不是每日類別，而是和消費儀表板一樣的固定連結，用 `cat-save`（青 `#0e7490`）指向 <https://penguin-yeh.github.io/savings/>。不要把它加進 `add_link.py` 的 `CATEGORIES`。
 
 新類別必須選一個**與以上都拉得開的色相**，並維持「淺色底深色字、深色底淺色字」的對比（內文對比至少 4.5:1）。
 
