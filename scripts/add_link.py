@@ -7,7 +7,7 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-CATEGORIES = ("新聞", "洞察", "X", "學習", "記帳", "週末")
+CATEGORIES = ("新聞", "洞察", "X", "學習", "記帳", "省錢", "週末")
 WEEKDAYS = "一二三四五六日"
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "data.json"
@@ -48,9 +48,8 @@ def item_slot(item):
 def clean_item(item):
     if not isinstance(item, dict):
         return None
-    if isinstance(item.get("links"), list) and not str(item.get("href") or "").strip():
-        return None
-    if str(item.get("tab") or "").strip():
+    href = item.get("href")
+    if not isinstance(href, str) or not href.strip():
         return None
     cleaned = {
         "category": item.get("category"),

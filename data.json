@@ -1,6 +1,18 @@
 {
   "days": [
     {
+      "date": "2026-11-25",
+      "label": "2026-11-25（三）",
+      "items": [
+        {
+          "category": "省錢",
+          "bot": "X Free Credits Finder",
+          "title": "省錢情報",
+          "href": "https://penguin-yeh.github.io/savings/"
+        }
+      ]
+    },
+    {
       "date": "2026-11-24",
       "label": "2026-11-24（二）",
       "items": [
