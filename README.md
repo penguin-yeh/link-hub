@@ -41,7 +41,21 @@ python3 scripts/add_link.py \
   --href "https://example.com/news"
 ```
 
-`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`週末`。同一天的同一類別會取代舊項目；日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
+`--category` 只接受 `新聞`、`洞察`、`X`、`學習`、`記帳`、`週末`。同一天的同一類別、同一 `--slot` 會取代舊項目；未指定 `--slot` 時，slot 等於類別名稱，因此行為與以前相同（例如晚間的「X 晚間整理」會蓋掉當天的「X 早報」）。日期不存在時會補上星期標籤，例如 `2026-11-07（六）`。寫入後 `days` 由新到舊排列，相對最新一天超過 30 天的日期會移進 `history`。
+
+同一類別若要並存兩筆（例如 X 分類同時放早報／晚間整理和 AI 爆紅精選），加上不同的 `--slot`。自訂 slot 會寫進 `data.json` 的 `slot` 欄位；預設 slot 不會多寫這個欄位。前端會列出同一類別的多筆連結。
+
+```bash
+python3 scripts/add_link.py \
+  --date 2026-11-25 \
+  --category X \
+  --slot ai-picks \
+  --bot "X Researcher" \
+  --title "AI 爆紅精選" \
+  --href "https://penguin-yeh.github.io/x-trends/?v=202611251440#ai"
+```
+
+這不會蓋掉同一天 `--category X` 且未指定 `--slot` 的「X 早報」或「X 晚間整理」，也不會動到 `--tab` 分頁。同一天重複跑 `--slot ai-picks` 只會更新這一筆。`--slot` 與 `--tab` 不要一起用：`--slot` 是同一類別的另一筆一般連結（title／href）；`--tab` 是 X 底下帶清單的分頁。
 
 X 底下可以有分頁。`--tab` 只用於類別 `X`，同一天的該分頁會整份換掉，不會動到當天的 X 早報或晚間整理；反過來更新早報或晚間也不會清掉分頁。清單用可重複的 `--link '標題|說明|網址'`，或 `--links-json` 指向一個 `[{title, note, href}, ...]` 檔案。
 

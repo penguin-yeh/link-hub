@@ -51,6 +51,14 @@ def clean_link(link):
     return cleaned
 
 
+def item_slot(item):
+    """Dedupe slot for a plain (non-tab) item; missing/blank slot equals the category name."""
+    slot = item.get("slot")
+    if slot is None or not str(slot).strip():
+        return item.get("category")
+    return str(slot).strip()
+
+
 def clean_item(item):
     if not isinstance(item, dict):
         return None
@@ -69,16 +77,21 @@ def clean_item(item):
             "bot": item.get("bot"),
             "links": links,
         }
-    return {
+    cleaned = {
         "category": item.get("category"),
         "bot": item.get("bot"),
         "title": item.get("title"),
         "href": item.get("href"),
     }
+    slot = item_slot(item)
+    if slot and slot != cleaned["category"]:
+        cleaned["slot"] = slot
+    return cleaned
 
 
 def canonical_items(items):
-    """同一類別的一般連結只留最後一筆；帶 tab 的清單另計，不會互相覆蓋。"""
+    """同一 (類別, slot) 的一般連結只留最後一筆；帶 tab 的清單另計，不會互相覆蓋。
+    未指定 slot 時等同於類別名，因此沒加 --slot 的行為與以前相同。"""
     plain = {}
     tabs = {}
     tab_order = []
@@ -95,13 +108,16 @@ def canonical_items(items):
                 tab_order.append(key)
             tabs[key] = cleaned
         elif category in CATEGORIES:
-            plain[category] = cleaned
+            plain[(category, item_slot(cleaned))] = cleaned
         else:
             extras.append(cleaned)
     ordered = []
     for name in CATEGORIES:
-        if name in plain:
-            ordered.append(plain[name])
+        if (name, name) in plain:
+            ordered.append(plain[(name, name)])
+        for (category, slot), entry in plain.items():
+            if category == name and slot != name:
+                ordered.append(entry)
         for key in tab_order:
             if key[0] == name:
                 ordered.append(tabs[key])
@@ -149,15 +165,21 @@ def day_bucket(days, day):
     return bucket
 
 
-def upsert(days, day, category, bot, title, href):
+def upsert(days, day, category, bot, title, href, slot=None):
     bucket = day_bucket(days, day)
+    slot = slot if slot is not None and str(slot).strip() else category
     bucket["items"] = [
         item for item in bucket["items"]
-        if not (item.get("category") == category and not item.get("tab"))
+        if not (
+            item.get("category") == category
+            and not item.get("tab")
+            and item_slot(item) == slot
+        )
     ]
-    bucket["items"].append(
-        {"category": category, "bot": bot, "title": title, "href": href}
-    )
+    entry = {"category": category, "bot": bot, "title": title, "href": href}
+    if slot != category:
+        entry["slot"] = slot
+    bucket["items"].append(entry)
     bucket["items"] = canonical_items(bucket["items"])
 
 
@@ -227,6 +249,12 @@ def build_parser():
     parser.add_argument("--bot", required=True, help="來源 bot 名稱")
     parser.add_argument("--title", help="連結標題")
     parser.add_argument("--href", help="連結網址")
+    parser.add_argument(
+        "--slot",
+        default=None,
+        help="同一天、同一類別內一般連結的區分鍵。預設等於 --category，因此不加時行為與以前相同。"
+             "例如 AI 爆紅精選用 --category X --slot ai-picks，才不會蓋掉當天的 X 早報／晚間整理。",
+    )
     parser.add_argument("--tab", help="X 類別底下的分頁，例如 AI 免費額度")
     parser.add_argument(
         "--link",
@@ -245,6 +273,10 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if not str(args.bot).strip():
         parser.error("bot 不可為空白")
+    if args.tab and args.slot:
+        parser.error("--slot 與 --tab 不要一起使用")
+    if args.slot is not None and not str(args.slot).strip():
+        parser.error("--slot 不可為空白")
 
     data = load_data()
     days = merge_days(list(data.get("days") or []) + list(data.get("history") or []))
@@ -263,7 +295,7 @@ def main(argv=None):
             parser.error("沒有 --tab 時不要使用 --link 或 --links-json")
         if not str(args.title or "").strip() or not str(args.href or "").strip():
             parser.error("bot、title、href 不可為空白")
-        upsert(days, args.date, args.category, args.bot, args.title, args.href)
+        upsert(days, args.date, args.category, args.bot, args.title, args.href, slot=args.slot)
     recent, older = partition(days)
     payload = {"days": recent, "history": older}
     text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
