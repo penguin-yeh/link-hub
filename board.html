@@ -193,11 +193,10 @@
       news:    { name: "新聞",  color: "#8eb7ea", base: "../daily-news/",     load: loadNews },
       x:       { name: "X",     color: "#f3f3f3", base: "../x-trends/",      load: loadX },
       insight: { name: "洞察",  color: "#f0c27a", base: "../daily-insights/", load: loadInsights },
-      learn:   { name: "學習",  color: "#b4a6f2", base: "../learning-daily/", load: loadLearning },
       weekend: { name: "週末",  color: "#ffb089", base: "../weekend-fun/",   load: loadWeekend },
     };
     // 來源權重：出現次數越多，被抽到的機率越高（新聞與 X 內容多，比較常出現）；相鄰兩則一定不同來源。
-    const PATTERN = ["news", "x", "insight", "news", "x", "weekend", "news", "x", "learn"];
+    const PATTERN = ["news", "x", "insight", "news", "x", "weekend", "news", "x"];
 
     const $ = (id) => document.getElementById(id);
     const txt = (el) => (el ? el.textContent.replace(/\s+/g, " ").trim() : "");
@@ -282,23 +281,6 @@
       day.querySelectorAll("article.card").forEach((c) => {
         const h = txt(c.querySelector("h3")); if (!h) return;
         out.push({ title: h, sub: "我的見解", summary: txt(c.querySelector(".view p")) || txt(c.querySelector(".ana")), note: txt(c.querySelector(".learn p")), meta: date, image: pic(c, base), href: abs("#" + c.id, base) });
-      });
-      return out;
-    }
-
-    async function loadLearning(base) {
-      const doc = await getDoc(base + "index.html");
-      const date = (doc.title.match(/\d{4}-\d{2}-\d{2}/) || [""])[0];
-      const out = [];
-      const toc = doc.querySelector('table[style*="margin-top:20px"]');   // 「今日目錄」
-      if (!toc) return out;
-      const heads = [...doc.querySelectorAll('div[style*="font-size:20px"]')];
-      toc.querySelectorAll("tr").forEach((tr) => {
-        const td = tr.querySelectorAll("td"); if (td.length < 3) return;
-        const title = txt(td[2]); if (!title) return;
-        const h = heads.find((x) => txt(x) === title);
-        const first = h && h.nextElementSibling ? h.nextElementSibling.querySelector("p") : null;
-        out.push({ title, sub: txt(td[1]), summary: txt(first), meta: date, href: abs("index.html", base) });
       });
       return out;
     }
