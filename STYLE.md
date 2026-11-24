@@ -56,7 +56,7 @@
 | 週末 | `cat-weekend` | 橘 `#d15a2c` |
 | 今日提醒（非連結類別，Apple 小秘書） | `cat-remind` | 松綠 `#2f6b45` |
 
-「記帳」與「省錢」都是每日類別，各寫一筆一般連結。類別 chips 裡的「記帳」固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，「省錢」固定連到 <https://penguin-yeh.github.io/savings/>，都不加 `target`。當天卡片只在 `data.json` 有該類項目時出現，並連到該日連結；沒有項目就不畫空卡片。頁面上方不釘消費儀表板或省錢情報卡。
+「記帳」與「省錢」留在 `add_link.py` 的 `CATEGORIES`，記帳小幫手仍會每晚寫入 `data.json`，不要刪那些項目。頁面上這兩類只出現在類別 chips：「記帳」固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，「省錢」固定連到 <https://penguin-yeh.github.io/savings/>，都不加 `target`。每日區塊和歷史區即使有這兩類的項目也不畫卡片；某一天若只剩這兩類，整日不要畫空卡。看板不要加這兩個來源。
 
 新類別必須選一個**與以上都拉得開的色相**，並維持「淺色底深色字、深色底淺色字」的對比（內文對比至少 4.5:1）。
 

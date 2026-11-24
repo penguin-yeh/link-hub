@@ -4,7 +4,7 @@
 
 最近 30 天排在上方，一天一區，類別順序為新聞、洞察、X、學習、記帳、省錢、週末。更早的日期收在摺疊的「歷史」。某一類當天沒有連結，就不顯示那張空卡片。
 
-解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是類別 chips。「記帳」chip 固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，「省錢」chip 固定連到 <https://penguin-yeh.github.io/savings/>，都不是當天最新的那一筆。每一天的記帳、省錢卡片仍顯示 `add_link.py` 寫入的那一天連結。常駐看板 `board.html` **不會**輪播或顯示今日提醒，也不輪播學習。
+解鎖後，頁面最上方釘一張「今日提醒」卡，資料在 `reminders.json`，由 **Apple 小秘書** 更新（只保留當天最新一筆，每次發布會整份覆寫）。其他 bot 請不要改這個檔，也不要用 `scripts/add_link.py` 寫入。其下是類別 chips。「記帳」chip 固定連到 <https://penguin-yeh.github.io/expense-dashboard/>，「省錢」chip 固定連到 <https://penguin-yeh.github.io/savings/>。這兩類不畫進每日區塊或歷史，`data.json` 裡的項目仍保留，`add_link.py` 也繼續接受它們；只含這兩類的日子整區不顯示。常駐看板 `board.html` **不會**輪播或顯示今日提醒，也不輪播學習。
 
 ## 本機預覽
 
