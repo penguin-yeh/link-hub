@@ -73,7 +73,7 @@ python3 scripts/add_link.py \
 
 ## 今日提醒（Apple 小秘書）
 
-置頂卡從同目錄的 `reminders.json` 載入，不經過 `data.json`。檔案只保留一個日期；若日期不是今天（Asia/Taipei），頁面會顯示「今天的提醒還沒更新」。本機預覽可用 `?date=YYYY-MM-DD` 指定要對照的日期。
+置頂卡從同目錄的 `reminders.json` 載入，不經過 `data.json`。檔案只保留一個日期；若日期不是今天（Asia/Taipei），頁面會顯示一行「今天的提醒還沒更新」。有資料時預設收合，點擊展開；本機預覽可用 `?date=YYYY-MM-DD` 指定要對照的日期。
 
 由 Apple 小秘書在產出每日卡片後執行：
 

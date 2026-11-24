@@ -707,6 +707,153 @@
       color: var(--soft);
     }
 
+    .reminders.is-collapsed {
+      display: block;
+      margin: 0 0 1rem;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .reminders.is-collapsed .day-mark,
+    .reminders.is-collapsed .reminders-details {
+      display: none;
+    }
+
+    .reminders-toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      width: 100%;
+      margin: 0;
+      padding: 0.8rem 0.9rem;
+      border: 0;
+      border-radius: 1rem;
+      background: var(--fill);
+      color: var(--ink);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .reminders.is-pending .reminders-toggle {
+      cursor: default;
+    }
+
+    .reminders-toggle:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .reminders-toggle .mark {
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: 0.75rem;
+    }
+
+    .reminders-toggle .mark svg {
+      width: 1.35rem;
+      height: 1.35rem;
+    }
+
+    .reminders-toggle-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .reminders.is-collapsed .reminders-headline {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .reminders.is-collapsed .reminders-sub {
+      margin: 0.2rem 0 0;
+    }
+
+    .reminders.is-expanded .reminders-toggle .reminders-headline,
+    .reminders.is-expanded .reminders-toggle .reminders-sub,
+    .reminders.is-expanded .reminders-toggle .reminders-summary,
+    .reminders.is-expanded .reminders-toggle .reminders-more {
+      display: none;
+    }
+
+    .reminders.is-collapsed .reminders-kicker {
+      display: none;
+    }
+
+    .reminders-kicker {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 750;
+      letter-spacing: 0.12em;
+    }
+
+    .reminders-affordance {
+      flex: none;
+      margin-top: 0.2rem;
+      color: var(--soft);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .reminders-summary {
+      list-style: none;
+      margin: 0.35rem 0 0;
+      padding: 0;
+    }
+
+    .reminders-summary li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      min-width: 0;
+      padding: 0.08rem 0;
+      font-size: 0.9rem;
+    }
+
+    .reminders-summary .reminders-dot {
+      margin-top: 0;
+      width: 0.4rem;
+      height: 0.4rem;
+    }
+
+    .reminders-summary .reminders-item {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .reminders-more {
+      margin: 0.15rem 0 0;
+      color: var(--soft);
+      font-size: 0.82rem;
+    }
+
+    .reminders.is-expanded .blocks {
+      gap: 0;
+      background: var(--fill);
+      color: var(--ink);
+      border-radius: 1rem;
+    }
+
+    .reminders.is-expanded .reminders-toggle {
+      background: transparent;
+      padding: 0.85rem 0.95rem 0.25rem;
+    }
+
+    .reminders.is-expanded .reminders-details {
+      background: transparent;
+      padding: 0.15rem 0.95rem 0.55rem;
+    }
+
+    .reminders.is-expanded .block-head {
+      margin-bottom: 0.15rem;
+    }
+
     .reminders a {
       color: inherit;
       text-decoration: underline;
@@ -1334,33 +1481,87 @@
       return wrap;
     }
 
+    const REMINDERS_OPEN_KEY = "link-hub-reminders-open";
+
+    function readReminderOpen(date) {
+      try {
+        const stored = JSON.parse(localStorage.getItem(REMINDERS_OPEN_KEY) || "null");
+        if (!stored || stored.date !== date) return false;
+        return stored.open === true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function writeReminderOpen(date, open) {
+      try {
+        localStorage.setItem(REMINDERS_OPEN_KEY, JSON.stringify({ date: date, open: !!open }));
+      } catch (error) { /* 私密模式就不記住 */ }
+    }
+
+    function reminderPeek(block, slot) {
+      const names = slot === "evening"
+        ? ["今天還沒完成", "今天到期", "今天先做"]
+        : ["今天先做", "今天到期", "今天還沒完成"];
+      const sections = (block && block.sections) || [];
+      let rows = [];
+      for (let i = 0; i < names.length; i += 1) {
+        const section = sections.find((entry) => entry && entry.label === names[i]);
+        const found = ((section && section.rows) || []).filter((row) => row && row.text && !row.muted);
+        if (found.length) {
+          rows = found;
+          break;
+        }
+      }
+      return {
+        items: rows.slice(0, 3),
+        extra: Math.max(0, rows.length - 3),
+        total: rows.length
+      };
+    }
+
+    function renderReminderPeek(block, slot, host) {
+      host.replaceChildren();
+      const peek = reminderPeek(block, slot);
+      if (!peek.items.length) return;
+      const list = document.createElement("ul");
+      list.className = "reminders-summary";
+      peek.items.forEach((row) => {
+        const item = document.createElement("li");
+        const dot = document.createElement("span");
+        dot.className = "reminders-dot";
+        if (row.color) dot.style.background = row.color;
+        const text = document.createElement("span");
+        text.className = "reminders-item";
+        text.textContent = row.text;
+        item.append(dot, text);
+        list.appendChild(item);
+      });
+      host.appendChild(list);
+      if (peek.extra) {
+        const more = document.createElement("p");
+        more.className = "reminders-more";
+        more.textContent = "還有 " + peek.extra + " 件";
+        host.appendChild(more);
+      }
+    }
+
     function renderRemindersPending(root, dateLabel) {
       const section = document.createElement("section");
-      section.className = "day reminders cat-remind";
-      const mark = document.createElement("div");
-      mark.className = "day-mark";
-      const dow = document.createElement("span");
-      dow.className = "dow";
-      dow.textContent = "今";
-      const md = document.createElement("span");
-      md.className = "md";
-      md.textContent = dateLabel || "今日提醒";
-      mark.append(dow, md);
-      const blocks = document.createElement("div");
-      blocks.className = "blocks";
-      const block = document.createElement("section");
-      block.className = "block cat-remind";
-      const head = document.createElement("div");
-      head.className = "block-head";
-      const title = document.createElement("h3");
-      title.textContent = "今日提醒";
-      head.append(badge("icon-remind"), title);
+      section.className = "day reminders cat-remind is-collapsed is-pending";
+      const bar = document.createElement("div");
+      bar.className = "reminders-toggle";
+      const body = document.createElement("div");
+      body.className = "reminders-toggle-body";
+      const headline = document.createElement("p");
+      headline.className = "reminders-headline";
+      headline.textContent = "今日提醒";
       const pending = document.createElement("p");
       pending.className = "reminders-pending";
       pending.textContent = "今天的提醒還沒更新";
-      block.append(head, pending);
-      blocks.appendChild(block);
-      section.append(mark, blocks);
+      body.append(headline, pending);
+      bar.append(badge("icon-remind"), body);
+      section.appendChild(bar);
       root.replaceChildren(section);
     }
 
@@ -1392,26 +1593,82 @@
 
       const blocks = document.createElement("div");
       blocks.className = "blocks";
-      const block = document.createElement("section");
-      block.className = "block cat-remind";
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "reminders-toggle";
+      toggle.setAttribute("aria-controls", "reminders-details");
+
+      const toggleBody = document.createElement("div");
+      toggleBody.className = "reminders-toggle-body";
+      const kicker = document.createElement("p");
+      kicker.className = "reminders-kicker";
+      kicker.textContent = "今日提醒";
+      const headline = document.createElement("p");
+      headline.className = "reminders-headline";
+      const sub = document.createElement("p");
+      sub.className = "reminders-sub";
+      const peekHost = document.createElement("div");
+      toggleBody.append(kicker, headline, sub, peekHost);
+
+      const affordance = document.createElement("span");
+      affordance.className = "reminders-affordance";
+      affordance.setAttribute("aria-hidden", "true");
+      toggle.append(badge("icon-remind"), toggleBody, affordance);
+
+      const details = document.createElement("section");
+      details.className = "block cat-remind reminders-details";
+      details.id = "reminders-details";
 
       const head = document.createElement("div");
       head.className = "block-head";
-      const title = document.createElement("h3");
-      title.textContent = "今日提醒";
       const tabs = document.createElement("div");
       tabs.className = "reminders-tabs";
       tabs.setAttribute("role", "tablist");
       tabs.setAttribute("aria-label", "早上或傍晚的提醒");
+      head.appendChild(tabs);
 
       const pane = document.createElement("div");
       pane.className = "reminders-pane";
+      details.append(head, pane);
+      if (data.updated_at) {
+        const updated = document.createElement("p");
+        updated.className = "reminders-updated";
+        const stamp = formatUpdatedAt(data.updated_at);
+        updated.textContent = stamp ? "更新於 " + stamp : "";
+        if (updated.textContent) details.appendChild(updated);
+      }
+
+      function fillToggle(slot) {
+        const block = data[slot] || {};
+        headline.textContent = block.headline || "今日提醒";
+        if (block.sub) {
+          sub.textContent = block.sub;
+          sub.hidden = false;
+        } else {
+          sub.textContent = "";
+          sub.hidden = true;
+        }
+        renderReminderPeek(block, slot, peekHost);
+      }
 
       function show(slot) {
         tabs.querySelectorAll("button").forEach((button) => {
           button.setAttribute("aria-selected", button.dataset.slot === slot ? "true" : "false");
         });
+        fillToggle(slot);
         pane.replaceChildren(renderReminderBlock(data[slot]));
+      }
+
+      function setOpen(open) {
+        open = !!open;
+        section.classList.toggle("is-expanded", open);
+        section.classList.toggle("is-collapsed", !open);
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        toggle.setAttribute("aria-label", open ? "收合今日提醒" : "展開今日提醒");
+        details.hidden = !open;
+        affordance.textContent = open ? "▴ 收合" : "▾ 展開";
+        writeReminderOpen(data.date, open);
       }
 
       [["morning", "早上"], ["evening", "傍晚"]].forEach(([slot, label]) => {
@@ -1425,24 +1682,23 @@
         if (!data[slot]) {
           button.disabled = true;
         } else {
-          button.addEventListener("click", () => show(slot));
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            show(slot);
+          });
         }
         tabs.appendChild(button);
       });
 
-      head.append(badge("icon-remind"), title, tabs);
-      block.append(head, pane);
-      if (data.updated_at) {
-        const updated = document.createElement("p");
-        updated.className = "reminders-updated";
-        const stamp = formatUpdatedAt(data.updated_at);
-        updated.textContent = stamp ? "更新於 " + stamp : "";
-        if (updated.textContent) block.appendChild(updated);
-      }
-      blocks.appendChild(block);
+      toggle.addEventListener("click", () => {
+        setOpen(!section.classList.contains("is-expanded"));
+      });
+
+      blocks.append(toggle, details);
       section.append(mark, blocks);
       root.replaceChildren(section);
       show(defaultSlot);
+      setOpen(readReminderOpen(data.date));
     }
 
     async function loadReminders() {

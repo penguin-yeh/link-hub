@@ -86,4 +86,4 @@
 
 ## 7. 置頂的今日提醒
 
-解鎖後，`index.html` 在消費儀表板與類別 chips 上方釘一張紙張卡片（沿用 `.day` / `.block` 與 `cat-remind` 松綠色票，勿與 `cat-expense` 的玫瑰衝突），從 `reminders.json` 讀當天的早上／傍晚內容。它不是 `scripts/add_link.py` 的類別，不要把它寫進 `CATEGORIES`。卡片的互動只有「早上／傍晚」切換；日期不是今天時改顯示「今天的提醒還沒更新」。
+解鎖後，`index.html` 在消費儀表板與類別 chips 上方釘一張「今日提醒」卡（沿用 `.day` / `.block` 與 `cat-remind` 松綠色票，勿與 `cat-expense` 的玫瑰衝突），從 `reminders.json` 讀當天的早上／傍晚內容。它不是 `scripts/add_link.py` 的類別，不要把它寫進 `CATEGORIES`。預設收合為一列摘要（標題、副標、兩到三件先做／未完成的事），點擊展開全文；同一天的展開狀態可記在 localStorage，換日後回到收合。早上／傍晚切換只出現在展開後的卡片裡。日期不是今天時維持一行「今天的提醒還沒更新」，不再展開。
