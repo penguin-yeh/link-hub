@@ -24,4 +24,4 @@
 | expense-dashboard | 帳本 | `#9B2F55` |
 | savings | 撑滿的小豬 | `#0E7490` |
 
-總站自己的圖示是鏈結，主色 `#7A5A32`，已經放在 repo 根目錄。類別 chips 的「學習」連到 csapp-ddia-study，所以 chip 用新芽，不是這本打開的書。
+總站根目錄的圖示維持原來的版本，不在這個資料夾。類別 chips 的「學習」連到 csapp-ddia-study，所以 chip 用新芽，不是這本打開的書。
