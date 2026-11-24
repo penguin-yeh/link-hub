@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="各個 bot 每天交來的連結都整理在這裡。">
+  <meta name="robots" content="noindex">
   <title>每日連結總站</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -335,6 +336,15 @@
       --hairline: rgba(82, 64, 168, 0.18);
     }
 
+    .cat-expense {
+      --fill: #f8e7ee;
+      --ink: #5a2036;
+      --soft: #7d4a5e;
+      --mark: #9b2f55;
+      --mark-ink: #fff6f8;
+      --hairline: rgba(155, 47, 85, 0.2);
+    }
+
     .cat-weekend {
       --fill: #fde3d4;
       --ink: #6e2e16;
@@ -390,6 +400,15 @@
         --hairline: rgba(180, 166, 242, 0.28);
       }
 
+      .cat-expense {
+        --fill: #3a1c2a;
+        --ink: #fde8f0;
+        --soft: #e7b4c6;
+        --mark: #f0a0c0;
+        --mark-ink: #3a1828;
+        --hairline: rgba(240, 160, 192, 0.3);
+      }
+
       .cat-weekend {
         --fill: #3a2219;
         --ink: #ffe4d4;
@@ -422,6 +441,72 @@
     details.history .day:first-of-type { margin-top: 1rem; }
 
     .status { color: var(--muted); }
+
+    .gate { margin: 0 auto 1.25rem; max-width: 22rem; }
+    .gate[hidden] { display: none; }
+    .gate form {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 1.35rem;
+      padding: 1.15rem;
+    }
+    .gate h2 {
+      margin: 0 0 0.85rem;
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+    .gate label { display: block; margin-bottom: 0.4rem; font-size: 0.88rem; color: var(--muted); }
+    .gate input {
+      width: 100%;
+      min-height: 2.75rem;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 0.7rem;
+      background: var(--bg);
+      color: var(--fg);
+      font: inherit;
+    }
+    .gate button {
+      width: 100%;
+      min-height: 2.75rem;
+      margin-top: 0.7rem;
+      border: 0;
+      border-radius: 999px;
+      background: var(--mast);
+      color: var(--mast-fg);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .gate button:disabled { opacity: 0.6; cursor: default; }
+    .gate input:focus-visible,
+    .gate button:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+    .gate-error { margin: 0.7rem 0 0; color: #8d2f2f; min-height: 1.2em; }
+    @media (prefers-color-scheme: dark) {
+      .gate-error { color: #f0b4b4; }
+    }
+
+    .pin {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0 0 1rem;
+      padding: 0.85rem 0.95rem;
+      border-radius: 1rem;
+      background: var(--fill);
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .pin .mark { width: 3rem; height: 3rem; border-radius: 0.85rem; }
+    .pin .mark svg { width: 1.6rem; height: 1.6rem; }
+    .pin .title { font-weight: 700; color: var(--ink); }
+    .pin .bot { color: var(--soft); }
+    .pin:hover .title { text-decoration: underline; text-underline-offset: 0.18em; }
+    .pin:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
 
     @media (max-width: 640px) {
       .masthead { padding: 2.1rem 0 1.6rem; }
@@ -469,6 +554,10 @@
       <rect x="5" y="3.6" width="14" height="16.8" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.7"/>
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="m8.6 9.2 1.3 1.3 2.1-2.4M14 9.5h2.6M8.6 14.2l1.3 1.3 2.1-2.4M14 14.5h2.6"/>
     </symbol>
+    <symbol id="icon-expense" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M7 3.8h8.2l2.3 2.3V20.2H7V3.8Z"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.2 3.9v2.3h2.2M9.3 10.2h5.4M9.3 13.4h5.4M9.3 16.6h3.2"/>
+    </symbol>
     <symbol id="icon-weekend" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="3.15" fill="none" stroke="currentColor" stroke-width="1.7"/>
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 3.2v2.15M12 18.65V20.8M3.2 12h2.15M18.65 12H20.8M6.05 6.05l1.5 1.5M16.45 16.45l1.5 1.5M17.95 6.05l-1.5 1.5M7.55 16.45l-1.5 1.5"/>
@@ -484,8 +573,26 @@
   </header>
   <main>
     <div class="wrap">
-      <ul class="key" id="key" hidden></ul>
-      <div id="app" class="status">載入中…</div>
+      <section id="gate" class="gate">
+        <form id="gate-form">
+          <h2>輸入密碼</h2>
+          <label for="gate-password">密碼</label>
+          <input id="gate-password" type="password" name="password" autocomplete="current-password" required>
+          <button type="submit">進入</button>
+          <p id="gate-error" class="gate-error" hidden>密碼不對</p>
+        </form>
+      </section>
+      <div id="desk" hidden>
+        <a class="pin cat-expense" href="https://penguin-yeh.github.io/expense-dashboard/" rel="noopener noreferrer">
+          <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><use href="#icon-expense"></use></svg></span>
+          <span>
+            <span class="title">消費儀表板</span>
+            <span class="bot">記帳小幫手</span>
+          </span>
+        </a>
+        <ul class="key" id="key" hidden></ul>
+        <div id="app" class="status">載入中…</div>
+      </div>
     </div>
   </main>
   <script>
@@ -495,6 +602,7 @@
       { name: "洞察", className: "cat-insight", icon: "icon-insight" },
       { name: "X", className: "cat-x", icon: "icon-x" },
       { name: "學習", className: "cat-learn", icon: "icon-learn" },
+      { name: "記帳", className: "cat-expense", icon: "icon-expense" },
       { name: "週末", className: "cat-weekend", icon: "icon-weekend" }
     ];
 
@@ -809,7 +917,82 @@
       }
     }
 
-    load().catch(() => showMessage("連結讀取失敗，請稍後再試。"));
+    const GATE_SALT = "mv24FYlAQXqzWPt+kNbhdw==";
+    const GATE_ITERATIONS = 200000;
+    const GATE_HASH = "3xAExdNY8/ArB2V6OVaNLkCIqCfvftk81PIMvdj9sIM=";
+    const GATE_KEY = "link-hub-gate";
+
+    function gateBytes(b64) {
+      const bin = atob(b64);
+      const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+
+    function remembered() {
+      try { return localStorage.getItem(GATE_KEY) === GATE_HASH; }
+      catch (error) { return false; }
+    }
+
+    function remember() {
+      try { localStorage.setItem(GATE_KEY, GATE_HASH); }
+      catch (error) { /* 私密模式就每次再問 */ }
+    }
+
+    async function passwordMatches(password) {
+      const material = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(password),
+        "PBKDF2",
+        false,
+        ["deriveBits"]
+      );
+      const bits = await crypto.subtle.deriveBits({
+        name: "PBKDF2",
+        salt: gateBytes(GATE_SALT),
+        iterations: GATE_ITERATIONS,
+        hash: "SHA-256"
+      }, material, 256);
+      const got = new Uint8Array(bits);
+      const expected = gateBytes(GATE_HASH);
+      if (got.length !== expected.length) return false;
+      let diff = 0;
+      for (let i = 0; i < got.length; i += 1) diff |= got[i] ^ expected[i];
+      return diff === 0;
+    }
+
+    function openDesk() {
+      document.getElementById("gate").hidden = true;
+      document.getElementById("desk").hidden = false;
+      load().catch(() => showMessage("連結讀取失敗，請稍後再試。"));
+    }
+
+    const gateForm = document.getElementById("gate-form");
+    gateForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const input = document.getElementById("gate-password");
+      const error = document.getElementById("gate-error");
+      const button = gateForm.querySelector("button");
+      error.hidden = true;
+      button.disabled = true;
+      try {
+        const ok = await passwordMatches(input.value);
+        if (!ok) {
+          error.hidden = false;
+          input.focus();
+          return;
+        }
+        input.value = "";
+        remember();
+        openDesk();
+      } catch (gateError) {
+        error.hidden = false;
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    if (remembered()) openDesk();
   </script>
 </body>
 </html>
