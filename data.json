@@ -5,6 +5,12 @@
       "label": "2026-11-25（三）",
       "items": [
         {
+          "category": "X",
+          "bot": "X Researcher",
+          "title": "X 早報",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=20261125"
+        },
+        {
           "category": "記帳",
           "bot": "記帳小幫手",
           "title": "11/25 消費（今天還沒有記帳）",
