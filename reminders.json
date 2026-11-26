@@ -1,43 +1,55 @@
 {
-  "date": "2026-11-25",
-  "updated_at": "2026-11-25T17:33:22+08:00",
-  "slot": "evening",
+  "date": "2026-11-26",
+  "updated_at": "2026-11-26T09:08:10+08:00",
+  "slot": "morning",
   "card": {
-    "theme": "evening",
-    "header_small": "Apple 小秘書 · 11/25 (三) 傍晚",
-    "headline": "週三辛苦了，快下班囉 🌙",
-    "sub": "💳 繳費提醒",
+    "header_small": "Apple 小秘書 · 11/26 (四)",
+    "headline": "週四早安，💳 繳費提醒 ☀️",
+    "sub": "3 件今天到期 · 1 個全天行程",
     "sections": [
       {
-        "label": "今天還沒完成",
+        "label": "今天先做",
         "rows": [
           {
             "text": "💳 繳費提醒",
-            "color": "#FF7BA9"
+            "color": "#E5487B"
           },
           {
-            "text": "CS : APP ~ Lecture 6 🏖️",
-            "color": "#FFB86B"
+            "text": "DDIA 2 🫯（週四固定，讀一小節就好）",
+            "color": "#EF6C3A"
           },
           {
-            "text": "東看看西看看 🫐",
-            "color": "#8B9BFF"
-          },
+            "text": "多聽聽英文 🩵（通勤聽一集 BBC 財經或六人行）",
+            "color": "#20A4C8"
+          }
+        ],
+        "style": "numbered"
+      },
+      {
+        "label": "今天的行程",
+        "rows": [
           {
-            "text": "多聽聽英文 🩵",
-            "color": "#5FD3F3"
+            "tag": "全天",
+            "text": "💳 繳費提醒",
+            "color": "#E5487B"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "今晚的行程",
+        "label": "今天到期",
         "rows": [
           {
-            "tag": "11/25 (三)",
-            "text": "無行程，今晚自由安排",
-            "muted": true,
-            "color": "#4b5075"
+            "text": "DDIA 2 🫯",
+            "color": "#EF6C3A"
+          },
+          {
+            "text": "東看看西看看 🫐",
+            "color": "#9B59D0"
+          },
+          {
+            "text": "多聽聽英文 🩵",
+            "color": "#20A4C8"
           }
         ],
         "style": "dot"
@@ -47,66 +59,71 @@
         "rows": [
           {
             "text": "記錄生活🌱",
-            "color": "#4ADE80"
+            "color": "#2BB673"
           },
           {
             "text": "看看精油",
-            "color": "#C49BFF"
+            "color": "#9B59D0"
           },
           {
             "text": "多練練車 / 看看路上的車 / 開車規則",
-            "color": "#FFB86B"
+            "color": "#F28C28"
           },
           {
             "text": "整理房間!! 把每個東西放好位置",
-            "color": "#FF7BA9"
+            "color": "#E5487B"
           },
           {
             "text": "買肌酸",
-            "color": "#5FD3F3"
+            "color": "#20A4C8"
           },
           {
             "text": "測試 Grok Bot 連結 Tailscale",
-            "color": "#8B9BFF"
+            "color": "#5B6CF0"
           },
           {
             "text": "買牙刷／牙膏收納用品",
-            "color": "#FF9F6B"
+            "color": "#EF6C3A"
           },
           {
             "text": "買牙膏",
-            "color": "#4ADE80"
+            "color": "#2BB673"
           },
           {
             "text": "買牙刷",
-            "color": "#C49BFF"
+            "color": "#9B59D0"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "睡前清單",
+        "label": "今日小任務 🎲",
         "rows": [
           {
-            "text": "伸展拉筋 🙆",
-            "color": "#4ADE80"
-          },
-          {
-            "text": "冥想 🧘",
-            "color": "#C49BFF"
-          },
-          {
-            "text": "Daily Recap",
-            "color": "#5FD3F3"
+            "text": "找一個角落，用低角度拍一張照 📷（路上順手拍就好）",
+            "color": "#F28C28"
           }
         ],
-        "style": "numbered"
+        "style": "dot"
+      },
+      {
+        "label": "今日加碼 💪",
+        "rows": [
+          {
+            "text": "穿搭 打扮有的沒的 ✨：挑一套「深藍＋大地色」的秋冬配色試穿拍照｜《男生秋冬平價質感穿搭訣竅》YouTube",
+            "color": "#2BB673"
+          },
+          {
+            "text": "CS:APP：看 CMU 15-213 Lecture 06（Control）前 25 分鐘，筆記條件碼與跳轉｜CMU CSAPP 15-213 YouTube 播放清單",
+            "color": "#5B6CF0"
+          }
+        ],
+        "style": "dot"
       }
     ],
     "notes": [
-      "今天的小任務：睡前寫一句今天的心情 ✍️，順手寫進 Daily Recap 也行",
-      "今日加碼：下班繞一條沒走過的小巷 🌄、10 分鐘打字練習 🙌，有空再做",
-      "牙膏牙刷可以順路一起買 🪥"
+      "💳 繳費提醒",
+      "今晚是敷面膜日，別忘了 🧖"
     ]
   }
 }
