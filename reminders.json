@@ -1,55 +1,44 @@
 {
   "date": "2026-11-26",
-  "updated_at": "2026-11-26T09:08:10+08:00",
-  "slot": "morning",
+  "updated_at": "2026-11-26T17:28:13+08:00",
+  "slot": "evening",
   "card": {
-    "header_small": "Apple 小秘書 · 11/26 (四)",
-    "headline": "週四早安，💳 繳費提醒 ☀️",
-    "sub": "3 件今天到期 · 1 個全天行程",
+    "theme": "evening",
+    "header_small": "Apple 小秘書 · 11/26 (四) 傍晚",
+    "headline": "週四辛苦了，快下班囉 🌙",
+    "sub": "今天還有 3 件習慣沒打勾",
     "sections": [
       {
-        "label": "今天先做",
+        "label": "今天還沒完成",
         "rows": [
           {
-            "text": "💳 繳費提醒",
-            "color": "#E5487B"
+            "text": "DDIA 2 🫯",
+            "color": "#FFB86B"
           },
           {
-            "text": "DDIA 2 🫯（週四固定，讀一小節就好）",
-            "color": "#EF6C3A"
+            "text": "東看看西看看 🫐",
+            "color": "#8B9BFF"
           },
           {
-            "text": "多聽聽英文 🩵（通勤聽一集 BBC 財經或六人行）",
-            "color": "#20A4C8"
-          }
-        ],
-        "style": "numbered"
-      },
-      {
-        "label": "今天的行程",
-        "rows": [
-          {
-            "tag": "全天",
-            "text": "💳 繳費提醒",
-            "color": "#E5487B"
+            "text": "多聽聽英文 🩵",
+            "color": "#5FD3F3"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "今天到期",
+        "label": "今晚的行程",
         "rows": [
           {
-            "text": "DDIA 2 🫯",
-            "color": "#EF6C3A"
+            "tag": "全天",
+            "text": "💳 繳費提醒",
+            "color": "#FF7BA9"
           },
           {
-            "text": "東看看西看看 🫐",
-            "color": "#9B59D0"
-          },
-          {
-            "text": "多聽聽英文 🩵",
-            "color": "#20A4C8"
+            "tag": "今晚",
+            "text": "沒有其他行程",
+            "muted": true,
+            "color": "#4b5075"
           }
         ],
         "style": "dot"
@@ -58,72 +47,68 @@
         "label": "小雜事（還沒做）",
         "rows": [
           {
-            "text": "記錄生活🌱",
-            "color": "#2BB673"
+            "text": "測試 Grok Bot 連結 Tailscale",
+            "color": "#8B9BFF"
+          },
+          {
+            "text": "記錄生活 🌱",
+            "color": "#4ADE80"
           },
           {
             "text": "看看精油",
-            "color": "#9B59D0"
+            "color": "#C49BFF"
           },
           {
             "text": "多練練車 / 看看路上的車 / 開車規則",
-            "color": "#F28C28"
+            "color": "#FFB86B"
           },
           {
             "text": "整理房間!! 把每個東西放好位置",
-            "color": "#E5487B"
+            "color": "#FF7BA9"
           },
           {
             "text": "買肌酸",
-            "color": "#20A4C8"
+            "color": "#5FD3F3"
           },
           {
-            "text": "測試 Grok Bot 連結 Tailscale",
-            "color": "#5B6CF0"
-          },
-          {
-            "text": "買牙刷／牙膏收納用品",
-            "color": "#EF6C3A"
+            "text": "買牙刷 / 牙膏收納用品",
+            "color": "#FF9F6B"
           },
           {
             "text": "買牙膏",
-            "color": "#2BB673"
+            "color": "#4ADE80"
           },
           {
             "text": "買牙刷",
-            "color": "#9B59D0"
+            "color": "#C49BFF"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "今日小任務 🎲",
+        "label": "睡前清單",
         "rows": [
           {
-            "text": "找一個角落，用低角度拍一張照 📷（路上順手拍就好）",
-            "color": "#F28C28"
-          }
-        ],
-        "style": "dot"
-      },
-      {
-        "label": "今日加碼 💪",
-        "rows": [
-          {
-            "text": "穿搭 打扮有的沒的 ✨：挑一套「深藍＋大地色」的秋冬配色試穿拍照｜《男生秋冬平價質感穿搭訣竅》YouTube",
-            "color": "#2BB673"
+            "text": "伸展拉筋 🙆",
+            "color": "#4ADE80"
           },
           {
-            "text": "CS:APP：看 CMU 15-213 Lecture 06（Control）前 25 分鐘，筆記條件碼與跳轉｜CMU CSAPP 15-213 YouTube 播放清單",
-            "color": "#5B6CF0"
+            "text": "冥想 🧘",
+            "color": "#C49BFF"
+          },
+          {
+            "text": "Daily Recap",
+            "color": "#5FD3F3"
           }
         ],
-        "style": "dot"
+        "style": "numbered"
       }
     ],
     "notes": [
-      "💳 繳費提醒",
-      "今晚是敷面膜日，別忘了 🧖"
+      "今天的小任務：找一個角落，用低角度拍一張照 📷，有空順手拍一張就好",
+      "今日加碼：穿搭打扮 ✨ + CS:APP 📘，晚上有力氣再碰一下",
+      "GG 筆記裡星期四還有 3 件工作待辦，明天上班記得看一下",
+      "早點睡 😴"
     ]
   }
 }
