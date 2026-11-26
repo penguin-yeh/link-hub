@@ -23,6 +23,12 @@
           "href": "https://penguin-yeh.github.io/x-trends/?v=2026112618"
         },
         {
+          "category": "記帳",
+          "bot": "記帳小幫手",
+          "title": "11/26 消費 NT$3603",
+          "href": "https://penguin-yeh.github.io/expense-dashboard/?date=2026-11-26"
+        },
+        {
           "category": "週末",
           "bot": "週末去哪玩",
           "title": "12/5–12/6 週末推薦",
