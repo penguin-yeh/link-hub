@@ -1,44 +1,52 @@
 {
-  "date": "2026-11-26",
-  "updated_at": "2026-11-26T17:28:13+08:00",
-  "slot": "evening",
+  "date": "2026-11-27",
+  "updated_at": "2026-11-27T09:05:00+08:00",
+  "slot": "morning",
   "card": {
-    "theme": "evening",
-    "header_small": "Apple 小秘書 · 11/26 (四) 傍晚",
-    "headline": "週四辛苦了，快下班囉 🌙",
-    "sub": "今天還有 3 件習慣沒打勾",
+    "header_small": "Apple 小秘書 · 11/27 (五)",
+    "headline": "週五早安，今天行程空空 ☀️",
+    "sub": "2 件今天到期 · 無行程",
     "sections": [
       {
-        "label": "今天還沒完成",
+        "label": "今天先做",
         "rows": [
           {
-            "text": "DDIA 2 🫯",
-            "color": "#FFB86B"
+            "text": "多聽聽英文 🩵（通勤聽一集 BBC 財經或六人行）",
+            "color": "#20A4C8"
           },
           {
-            "text": "東看看西看看 🫐",
-            "color": "#8B9BFF"
+            "text": "東看看西看看 🫐（花 15 分鐘逛逛 feed）",
+            "color": "#9B59D0"
           },
           {
-            "text": "多聽聽英文 🩵",
-            "color": "#5FD3F3"
+            "text": "買牙刷＋牙膏（小雜事一次清兩件）",
+            "color": "#2BB673"
+          }
+        ],
+        "style": "numbered"
+      },
+      {
+        "label": "今天的行程",
+        "rows": [
+          {
+            "tag": "11/27 (五)",
+            "text": "無行程",
+            "muted": true,
+            "color": "#C9CDD3"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "今晚的行程",
+        "label": "今天到期",
         "rows": [
           {
-            "tag": "全天",
-            "text": "💳 繳費提醒",
-            "color": "#FF7BA9"
+            "text": "多聽聽英文 🩵",
+            "color": "#20A4C8"
           },
           {
-            "tag": "今晚",
-            "text": "沒有其他行程",
-            "muted": true,
-            "color": "#4b5075"
+            "text": "東看看西看看 🫐",
+            "color": "#9B59D0"
           }
         ],
         "style": "dot"
@@ -47,68 +55,72 @@
         "label": "小雜事（還沒做）",
         "rows": [
           {
-            "text": "測試 Grok Bot 連結 Tailscale",
-            "color": "#8B9BFF"
-          },
-          {
-            "text": "記錄生活 🌱",
-            "color": "#4ADE80"
+            "text": "記錄生活🌱",
+            "color": "#2BB673"
           },
           {
             "text": "看看精油",
-            "color": "#C49BFF"
+            "color": "#9B59D0"
           },
           {
             "text": "多練練車 / 看看路上的車 / 開車規則",
-            "color": "#FFB86B"
+            "color": "#F28C28"
           },
           {
             "text": "整理房間!! 把每個東西放好位置",
-            "color": "#FF7BA9"
+            "color": "#E5487B"
           },
           {
             "text": "買肌酸",
-            "color": "#5FD3F3"
+            "color": "#20A4C8"
           },
           {
-            "text": "買牙刷 / 牙膏收納用品",
-            "color": "#FF9F6B"
+            "text": "測試 Grok Bot 連結 Tailscale",
+            "color": "#5B6CF0"
+          },
+          {
+            "text": "買牙刷／牙膏收納用品",
+            "color": "#EF6C3A"
           },
           {
             "text": "買牙膏",
-            "color": "#4ADE80"
+            "color": "#2BB673"
           },
           {
             "text": "買牙刷",
-            "color": "#C49BFF"
+            "color": "#9B59D0"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "睡前清單",
+        "label": "今日小任務 🎲",
         "rows": [
           {
-            "text": "伸展拉筋 🙆",
-            "color": "#4ADE80"
-          },
-          {
-            "text": "冥想 🧘",
-            "color": "#C49BFF"
-          },
-          {
-            "text": "Daily Recap",
-            "color": "#5FD3F3"
+            "text": "拍一張光影很漂亮的照片 ☀️（看到好看的光就順手按一下）",
+            "color": "#F28C28"
           }
         ],
-        "style": "numbered"
+        "style": "dot"
+      },
+      {
+        "label": "今日加碼 💪",
+        "rows": [
+          {
+            "text": "學攝影🌃：手機開九宮格，把主體放在交叉點拍 3 張｜Enzo《這樣構圖最好看(一)－九宮格法》YouTube",
+            "color": "#2BB673"
+          },
+          {
+            "text": "DDIA 2 🫯：讀 30 分鐘「關係模型 vs 文件模型」，寫 3 句筆記｜DDIA 中文版 第二章（Vonng）",
+            "color": "#5B6CF0"
+          }
+        ],
+        "style": "dot"
       }
     ],
     "notes": [
-      "今天的小任務：找一個角落，用低角度拍一張照 📷，有空順手拍一張就好",
-      "今日加碼：穿搭打扮 ✨ + CS:APP 📘，晚上有力氣再碰一下",
-      "GG 筆記裡星期四還有 3 件工作待辦，明天上班記得看一下",
-      "早點睡 😴"
+      "週五了，輕鬆完成幾件就很棒 💪",
+      "明天是敷面膜日，今晚好好休息 🌙"
     ]
   }
 }
