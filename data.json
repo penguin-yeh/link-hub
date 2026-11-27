@@ -1,6 +1,18 @@
 {
   "days": [
     {
+      "date": "2026-11-27",
+      "label": "2026-11-27（五）",
+      "items": [
+        {
+          "category": "X",
+          "bot": "X Researcher",
+          "title": "X 早報",
+          "href": "https://penguin-yeh.github.io/x-trends/?v=20261127"
+        }
+      ]
+    },
+    {
       "date": "2026-11-26",
       "label": "2026-11-26（四）",
       "items": [
