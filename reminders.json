@@ -1,52 +1,23 @@
 {
   "date": "2026-11-27",
-  "updated_at": "2026-11-27T09:05:00+08:00",
-  "slot": "morning",
+  "updated_at": "2026-11-27T17:36:56+08:00",
+  "slot": "evening",
   "card": {
-    "header_small": "Apple 小秘書 · 11/27 (五)",
-    "headline": "週五早安，今天行程空空 ☀️",
-    "sub": "2 件今天到期 · 無行程",
+    "theme": "evening",
+    "header_small": "Apple 小秘書 · 11/27 (五) 晚上",
+    "headline": "週五辛苦了，晚上好 🌙",
+    "sub": "還有 2 件今天的習慣沒打勾 · 今晚無行程",
     "sections": [
       {
-        "label": "今天先做",
+        "label": "今天還沒完成",
         "rows": [
-          {
-            "text": "多聽聽英文 🩵（通勤聽一集 BBC 財經或六人行）",
-            "color": "#20A4C8"
-          },
-          {
-            "text": "東看看西看看 🫐（花 15 分鐘逛逛 feed）",
-            "color": "#9B59D0"
-          },
-          {
-            "text": "買牙刷＋牙膏（小雜事一次清兩件）",
-            "color": "#2BB673"
-          }
-        ],
-        "style": "numbered"
-      },
-      {
-        "label": "今天的行程",
-        "rows": [
-          {
-            "tag": "11/27 (五)",
-            "text": "無行程",
-            "muted": true,
-            "color": "#C9CDD3"
-          }
-        ],
-        "style": "dot"
-      },
-      {
-        "label": "今天到期",
-        "rows": [
-          {
-            "text": "多聽聽英文 🩵",
-            "color": "#20A4C8"
-          },
           {
             "text": "東看看西看看 🫐",
-            "color": "#9B59D0"
+            "color": "#8B9BFF"
+          },
+          {
+            "text": "多聽聽英文 🩵",
+            "color": "#5FD3F3"
           }
         ],
         "style": "dot"
@@ -56,71 +27,80 @@
         "rows": [
           {
             "text": "記錄生活🌱",
-            "color": "#2BB673"
+            "color": "#4ADE80"
           },
           {
             "text": "看看精油",
-            "color": "#9B59D0"
+            "color": "#C49BFF"
           },
           {
             "text": "多練練車 / 看看路上的車 / 開車規則",
-            "color": "#F28C28"
+            "color": "#FFB86B"
           },
           {
             "text": "整理房間!! 把每個東西放好位置",
-            "color": "#E5487B"
+            "color": "#FF7BA9"
           },
           {
             "text": "買肌酸",
-            "color": "#20A4C8"
+            "color": "#5FD3F3"
           },
           {
             "text": "測試 Grok Bot 連結 Tailscale",
-            "color": "#5B6CF0"
+            "color": "#8B9BFF"
           },
           {
-            "text": "買牙刷／牙膏收納用品",
-            "color": "#EF6C3A"
+            "text": "買牙刷 / 牙膏收納用品",
+            "color": "#FF9F6B"
           },
           {
             "text": "買牙膏",
-            "color": "#2BB673"
+            "color": "#4ADE80"
           },
           {
             "text": "買牙刷",
-            "color": "#9B59D0"
+            "color": "#C49BFF"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "今日小任務 🎲",
+        "label": "今晚的行程",
         "rows": [
           {
-            "text": "拍一張光影很漂亮的照片 ☀️（看到好看的光就順手按一下）",
-            "color": "#F28C28"
+            "tag": "11/27 (五)",
+            "text": "無行程",
+            "muted": true,
+            "color": "#4b5075"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "今日加碼 💪",
+        "label": "睡前清單",
         "rows": [
           {
-            "text": "學攝影🌃：手機開九宮格，把主體放在交叉點拍 3 張｜Enzo《這樣構圖最好看(一)－九宮格法》YouTube",
-            "color": "#2BB673"
+            "text": "伸展拉筋 🙆",
+            "color": "#4ADE80"
           },
           {
-            "text": "DDIA 2 🫯：讀 30 分鐘「關係模型 vs 文件模型」，寫 3 句筆記｜DDIA 中文版 第二章（Vonng）",
-            "color": "#5B6CF0"
+            "text": "冥想 🧘",
+            "color": "#C49BFF"
+          },
+          {
+            "text": "Daily Recap",
+            "color": "#5FD3F3"
           }
         ],
-        "style": "dot"
+        "style": "numbered"
       }
     ],
     "notes": [
-      "週五了，輕鬆完成幾件就很棒 💪",
-      "明天是敷面膜日，今晚好好休息 🌙"
+      "今天的小任務：拍一張光影很漂亮的照片 📸，下班路上順手拍也可以",
+      "今日加碼：學攝影🌃 剛好跟小任務一起做；DDIA 2 有空翻幾頁就好",
+      "牙刷牙膏還在小雜事裡，下班順路可以一次買齊 🪥",
+      "💊 晚上的私人提醒",
+      "週末開始了，早點睡 😴"
     ]
   }
 }
