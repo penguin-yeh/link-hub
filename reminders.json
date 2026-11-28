@@ -1,23 +1,37 @@
 {
-  "date": "2026-11-27",
-  "updated_at": "2026-11-27T17:36:56+08:00",
-  "slot": "evening",
+  "date": "2026-11-28",
+  "updated_at": "2026-11-28T09:05:05+08:00",
+  "slot": "morning",
   "card": {
-    "theme": "evening",
-    "header_small": "Apple 小秘書 · 11/27 (五) 晚上",
-    "headline": "週五辛苦了，晚上好 🌙",
-    "sub": "還有 2 件今天的習慣沒打勾 · 今晚無行程",
+    "header_small": "Apple 小秘書 · 11/28 (六)",
+    "headline": "週六早安，今天慢慢來 ☀️",
+    "sub": "今天沒有到期提醒 · 1 個全天行程",
     "sections": [
       {
-        "label": "今天還沒完成",
+        "label": "今天先做",
         "rows": [
           {
-            "text": "東看看西看看 🫐",
-            "color": "#8B9BFF"
+            "text": "💊 晚上的私人提醒",
+            "color": "#EF6C3A"
           },
           {
-            "text": "多聽聽英文 🩵",
-            "color": "#5FD3F3"
+            "text": "整理房間!! 把每個東西放好位置（週末最適合）",
+            "color": "#E5487B"
+          },
+          {
+            "text": "買牙刷＋牙膏＋收納用品（小雜事一次清三件）",
+            "color": "#2BB673"
+          }
+        ],
+        "style": "numbered"
+      },
+      {
+        "label": "今天的行程",
+        "rows": [
+          {
+            "tag": "全天",
+            "text": "💊 晚上的私人提醒",
+            "color": "#EF6C3A"
           }
         ],
         "style": "dot"
@@ -27,80 +41,71 @@
         "rows": [
           {
             "text": "記錄生活🌱",
-            "color": "#4ADE80"
+            "color": "#2BB673"
           },
           {
             "text": "看看精油",
-            "color": "#C49BFF"
+            "color": "#9B59D0"
           },
           {
             "text": "多練練車 / 看看路上的車 / 開車規則",
-            "color": "#FFB86B"
+            "color": "#F28C28"
           },
           {
             "text": "整理房間!! 把每個東西放好位置",
-            "color": "#FF7BA9"
+            "color": "#E5487B"
           },
           {
             "text": "買肌酸",
-            "color": "#5FD3F3"
+            "color": "#20A4C8"
           },
           {
             "text": "測試 Grok Bot 連結 Tailscale",
-            "color": "#8B9BFF"
+            "color": "#5B6CF0"
           },
           {
-            "text": "買牙刷 / 牙膏收納用品",
-            "color": "#FF9F6B"
+            "text": "買牙刷／牙膏收納用品",
+            "color": "#EF6C3A"
           },
           {
             "text": "買牙膏",
-            "color": "#4ADE80"
+            "color": "#2BB673"
           },
           {
             "text": "買牙刷",
-            "color": "#C49BFF"
+            "color": "#9B59D0"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "今晚的行程",
+        "label": "今日小任務 🎲",
         "rows": [
           {
-            "tag": "11/27 (五)",
-            "text": "無行程",
-            "muted": true,
-            "color": "#4b5075"
+            "text": "走路時注意 5 種不同顏色的東西 🌈（出門晃晃時順便找找看）",
+            "color": "#F28C28"
           }
         ],
         "style": "dot"
       },
       {
-        "label": "睡前清單",
+        "label": "今日加碼 💪",
         "rows": [
           {
-            "text": "伸展拉筋 🙆",
-            "color": "#4ADE80"
+            "text": "探索沒去過的地方🌄：走一段沒走過的街區散步 30 分鐘｜《新竹最美的古蹟散步路線》YouTube",
+            "color": "#2BB673"
           },
           {
-            "text": "冥想 🧘",
-            "color": "#C49BFF"
-          },
-          {
-            "text": "Daily Recap",
-            "color": "#5FD3F3"
+            "text": "多聽聽英文 🩵：聽一集 6 分鐘節目，跟讀 3 句｜BBC 6 Minute English《Is Gen Z getting less intelligent?》",
+            "color": "#20A4C8"
           }
         ],
-        "style": "numbered"
+        "style": "dot"
       }
     ],
     "notes": [
-      "今天的小任務：拍一張光影很漂亮的照片 📸，下班路上順手拍也可以",
-      "今日加碼：學攝影🌃 剛好跟小任務一起做；DDIA 2 有空翻幾頁就好",
-      "牙刷牙膏還在小雜事裡，下班順路可以一次買齊 🪥",
-      "💊 晚上的私人提醒",
-      "週末開始了，早點睡 😴"
+      "今晚是敷面膜日 🧖，記得留點時間給皮膚",
+      "週末不用排滿，做完一兩件就很棒 💪"
     ]
   }
 }
