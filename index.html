@@ -355,6 +355,15 @@
       --hairline: rgba(14, 116, 144, 0.2);
     }
 
+    .cat-care {
+      --fill: #f3e6ef;
+      --ink: #4a2048;
+      --soft: #7a4e72;
+      --mark: #8a3a72;
+      --mark-ink: #fdf6fa;
+      --hairline: rgba(138, 58, 114, 0.2);
+    }
+
     .cat-weekend {
       --fill: #fde3d4;
       --ink: #6e2e16;
@@ -436,6 +445,15 @@
         --mark: #7fd3e4;
         --mark-ink: #102428;
         --hairline: rgba(127, 211, 228, 0.3);
+      }
+
+      .cat-care {
+        --fill: #32202e;
+        --ink: #f8e6f0;
+        --soft: #e0b3d0;
+        --mark: #e89ac8;
+        --mark-ink: #2c1526;
+        --hairline: rgba(232, 154, 200, 0.3);
       }
 
       .cat-weekend {
@@ -872,6 +890,16 @@
         <path d="M8.2 18.6v1.7M13.4 18.6v1.7"/>
       </g>
     </symbol>
+    <symbol id="icon-care" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="1.55"/>
+        <ellipse cx="12" cy="6.55" rx="2.1" ry="3.05"/>
+        <ellipse cx="12" cy="6.55" rx="2.1" ry="3.05" transform="rotate(72 12 12)"/>
+        <ellipse cx="12" cy="6.55" rx="2.1" ry="3.05" transform="rotate(144 12 12)"/>
+        <ellipse cx="12" cy="6.55" rx="2.1" ry="3.05" transform="rotate(216 12 12)"/>
+        <ellipse cx="12" cy="6.55" rx="2.1" ry="3.05" transform="rotate(288 12 12)"/>
+      </g>
+    </symbol>
     <symbol id="icon-weekend" viewBox="0 0 24 24">
       <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 21.3s6.3-5.3 6.3-10.4A6.3 6.3 0 0 0 5.7 10.9c0 5.1 6.3 10.4 6.3 10.4z"/>
@@ -919,8 +947,14 @@
       { name: "學習", className: "cat-learn", icon: "icon-learn" },
       { name: "記帳", className: "cat-expense", icon: "icon-expense" },
       { name: "省錢", className: "cat-save", icon: "icon-save" },
+      { name: "保養", className: "cat-care", icon: "icon-care" },
       { name: "週末", className: "cat-weekend", icon: "icon-weekend" }
     ];
+    const CHIP_ONLY = {
+      "記帳": { href: "https://penguin-yeh.github.io/expense-dashboard/", label: "開啟消費儀表板" },
+      "省錢": { href: "https://penguin-yeh.github.io/savings/", label: "開啟省錢情報" },
+      "保養": { href: "https://penguin-yeh.github.io/skincare-recovery/", label: "開啟微針術前術後恢復清單" }
+    };
 
     function icon(id) {
       const svg = document.createElementNS(SVG_NS, "svg");
@@ -1085,19 +1119,17 @@
       list.replaceChildren();
       CATEGORIES.forEach((category) => {
         const li = document.createElement("li");
-        const href = category.name === "記帳"
-          ? "https://penguin-yeh.github.io/expense-dashboard/"
-          : category.name === "省錢"
-            ? "https://penguin-yeh.github.io/savings/"
-            : category.name === "週末" ? weekendChipHref(data) : latestHref(data, category.name);
+        const fixed = CHIP_ONLY[category.name];
+        const href = fixed
+          ? fixed.href
+          : category.name === "週末" ? weekendChipHref(data) : latestHref(data, category.name);
         const chip = document.createElement(href ? "a" : "span");
         chip.className = "chip " + category.className + (href ? "" : " is-disabled");
         if (href) {
           chip.href = href;
-          if (category.name !== "記帳" && category.name !== "省錢") chip.target = "_blank";
+          if (!fixed) chip.target = "_blank";
           chip.rel = "noopener noreferrer";
-          const labels = { "記帳": "開啟消費儀表板", "省錢": "開啟省錢情報" };
-          chip.setAttribute("aria-label", labels[category.name] || "開啟最新的" + category.name);
+          chip.setAttribute("aria-label", (fixed && fixed.label) || "開啟最新的" + category.name);
         } else {
           chip.setAttribute("aria-disabled", "true");
         }
@@ -1137,7 +1169,7 @@
       blocks.className = "blocks";
 
       CATEGORIES.forEach((category) => {
-        if (category.name === "記帳" || category.name === "省錢") return;
+        if (CHIP_ONLY[category.name]) return;
         let items = (day.items || []).filter((item) => item.category === category.name);
         let carried = false;
         if (category.name === "週末") {

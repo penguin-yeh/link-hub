@@ -1,6 +1,18 @@
 {
   "days": [
     {
+      "date": "2026-11-29",
+      "label": "2026-11-29（日）",
+      "items": [
+        {
+          "category": "保養",
+          "bot": "保養小助手",
+          "title": "12/12 微針術前術後恢復清單",
+          "href": "https://penguin-yeh.github.io/skincare-recovery/"
+        }
+      ]
+    },
+    {
       "date": "2026-11-28",
       "label": "2026-11-28（六）",
       "items": [
