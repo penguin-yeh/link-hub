@@ -5,6 +5,12 @@
       "label": "2026-11-28（六）",
       "items": [
         {
+          "category": "新聞",
+          "bot": "每天發生的事",
+          "title": "今日新聞統整",
+          "href": "https://penguin-yeh.github.io/daily-news/2026-11-28.html"
+        },
+        {
           "category": "X",
           "bot": "X Researcher",
           "title": "X 早報",
